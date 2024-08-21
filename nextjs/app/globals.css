@@ -1,0 +1,11 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.bg-gradient-primary {
+  @apply bg-gradient-to-r from-primary-start via-primary-middle to-primary-end;
+}
+
+.text-gradient-primary {
+  @apply bg-clip-text text-transparent bg-gradient-to-r from-primary-start via-primary-middle to-primary-end;
+}
