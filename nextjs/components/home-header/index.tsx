@@ -30,7 +30,7 @@ export default function HomeHeader() {
         <div className="hidden lg:flex lg:flex-1 lg:justify-end">
           <a
             href="#"
-            className="text-gradient-primary text-sm font-semibold leading-6"
+            className="text-gradient-primary hover:text-gray-700 text-sm font-semibold leading-6"
           >
             Log in <span aria-hidden="true">&rarr;</span>
           </a>
@@ -59,7 +59,7 @@ export default function HomeHeader() {
               <div className="py-6">
                 <a
                   href="#"
-                  className="-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gradient-primary hover:bg-gray-50"
+                  className="-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gradient-primary hover:text-gray-700"
                 >
                   Log in
                 </a>
