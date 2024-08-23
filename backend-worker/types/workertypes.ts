@@ -1,16 +1,4 @@
 
-enum IntentCategory {
-  DIRECT_LLM_ANSWER = 1,
-  CACHED_PROFILE = 2,
-  QUICK_RAG = 3,
-  FULL_RAG = 4,
-}
-
-enum SearchType {
-  text = 1,
-  image = 2,
-  video = 3,
-}
 
 // Models for D1
 type User = {
@@ -19,24 +7,26 @@ type User = {
   name?: string;
   createdAt: Date;
   updatedAt: Date;
-  queries: Query[];
+  queries?: string; // query ids, convert the array to string before saving and parse it when reading
 };
 
 type Query = {
   id: string;
   userId: string;
   content: string;
-  intentCategory: IntentCategory;
+  intentCategory: "DIRECT_LLM_ANSWER" | "CACHED_PROFILE" | "QUICK_RAG" | "FULL_RAG";
   createdAt: Date;
-  searchResults: SearchResult[];
+  searchResults: string; // search result ids, convert the array to string before saving and parse it when reading
+  ragResultId?: string;
+  deepRAGProfileId?: string;
 };
 
 type SearchResult = {
   id: string;
   queryId: string;
-  type: SearchType;
-  content: string; // text content or img/video url
-  metadata?: Record<string, any>; // additional metadata
+  type: "text" | "image" | "video";
+  content: string; // text or img/video url
+  metadata?: string // metadata for the search result. convert the json to string before saving and parse it when reading
   createdAt: Date;
 };
 
@@ -45,7 +35,6 @@ type RAGResult = {
   queryId: string;
   content: string;
   isQuickRAG: boolean;
-  sourceIds: string[]; // SearchResult ids
   createdAt: Date;
   updatedAt: Date;
 };
@@ -64,8 +53,7 @@ type DeepRAGProfile = {
 type RAGProcess = {
   id: string;
   queryId: string;
-  status: "pending" | "completed" | "failed" | "processing";
-  progress: number;
+  status: "pending" | "completed" | "failed" | "quick RAG" | "full RAG";
   createdAt: Date;
   updatedAt: Date;
 };

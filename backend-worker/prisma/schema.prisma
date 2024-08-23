@@ -11,61 +11,59 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-enum IntentCategory {
-  DIRECT_LLM_ANSWER
-  CACHED_PROFILE
-  QUICK_RAG
-  FULL_RAG
-}
-
-enum SearchType {
-  text
-  image
-  video
-}
-
 model User {
-  id string @id @default(cuid())
-  email String? @unique
-  name String?
+  id        String   @id @default(uuid())
+  email     String?
+  name      String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  queries Query[]
+  queries   String?  // Stored as a string, needs to be parsed when read
+
+  @@map("users")
 }
 
 model Query {
-  id string @id @default(cuid())
-  userId  String
-  content  String
-  intentCategory IntentCategory
-  createdAt DateTime @default(now())
-  searchResults SearchResults[]
+  id                String   @id @default(uuid())
+  userId            String
+  content           String
+  intentCategory    String   // Enum: "DIRECT_LLM_ANSWER" | "CACHED_PROFILE" | "QUICK_RAG" | "FULL_RAG"
+  createdAt         DateTime @default(now())
+  searchResults     String   // Stored as a string, needs to be parsed when read
+  ragResultId       String?
+  deepRAGProfileId  String?
+
+  @@map("queries")
 }
 
 model SearchResult {
-  id string @id @default(cuid())
-  queryId String
-  type SearchType
-  content String
-  metadata Json?
+  id        String   @id @default(uuid())
+  queryId   String
+  type      String   // Enum: "text" | "image" | "video"
+  content   String
+  metadata  String?  // Stored as a string, needs to be parsed when read
   createdAt DateTime @default(now())
+
+  @@map("search_results")
 }
 
 model RAGResult {
-  id string @id @default(cuid())
-  queryId String
-  content String
+  id         String   @id @default(uuid())
+  queryId    String
+  content    String
   isQuickRAG Boolean
-  sourceIds String[]
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@map("rag_results")
 }
 
 model DeepRAGProfile {
-  id string @id @default(cuid())
-  queryId String
-  content String
+  id         String   @id @default(uuid())
+  queryId    String
+  content    String
   reflection String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@map("deep_rag_profiles")
 }
