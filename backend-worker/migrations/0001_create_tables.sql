@@ -1,52 +1,18 @@
--- CreateTable
-CREATE TABLE "users" (
+-- RedefineTables
+PRAGMA defer_foreign_keys=ON;
+PRAGMA foreign_keys=OFF;
+CREATE TABLE "new_queries" (
     "id" TEXT NOT NULL PRIMARY KEY,
-    "email" TEXT,
-    "name" TEXT,
-    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" DATETIME NOT NULL,
-    "queries" TEXT
-);
-
--- CreateTable
-CREATE TABLE "queries" (
-    "id" TEXT NOT NULL PRIMARY KEY,
-    "userId" TEXT NOT NULL,
+    "userId" TEXT,
     "content" TEXT NOT NULL,
     "intentCategory" TEXT NOT NULL,
     "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "searchResults" TEXT NOT NULL,
+    "searchResults" TEXT,
     "ragResultId" TEXT,
     "deepRAGProfileId" TEXT
 );
-
--- CreateTable
-CREATE TABLE "search_results" (
-    "id" TEXT NOT NULL PRIMARY KEY,
-    "queryId" TEXT NOT NULL,
-    "type" TEXT NOT NULL,
-    "content" TEXT NOT NULL,
-    "metadata" TEXT,
-    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
-);
-
--- CreateTable
-CREATE TABLE "rag_results" (
-    "id" TEXT NOT NULL PRIMARY KEY,
-    "queryId" TEXT NOT NULL,
-    "content" TEXT NOT NULL,
-    "isQuickRAG" BOOLEAN NOT NULL,
-    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" DATETIME NOT NULL
-);
-
--- CreateTable
-CREATE TABLE "deep_rag_profiles" (
-    "id" TEXT NOT NULL PRIMARY KEY,
-    "queryId" TEXT NOT NULL,
-    "content" TEXT NOT NULL,
-    "reflection" TEXT,
-    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" DATETIME NOT NULL
-);
-
+INSERT INTO "new_queries" ("content", "createdAt", "deepRAGProfileId", "id", "intentCategory", "ragResultId", "searchResults", "userId") SELECT "content", "createdAt", "deepRAGProfileId", "id", "intentCategory", "ragResultId", "searchResults", "userId" FROM "queries";
+DROP TABLE "queries";
+ALTER TABLE "new_queries" RENAME TO "queries";
+PRAGMA foreign_keys=ON;
+PRAGMA defer_foreign_keys=OFF;

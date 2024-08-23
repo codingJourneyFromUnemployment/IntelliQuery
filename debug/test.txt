@@ -1,17 +1,6 @@
-我准备前端用next.js app router （clerk管理登陆）, 后端用cloudflare woker, 写一个全栈的AI搜索引擎。业务流程如下：用户查询 | v 后端API接收查询 | v 意图识别LLM (返回JSON) | v 路由函数 | +-> 如果是类别1或2: 直接LLM回答 | +-> 如果是类别3: 返回缓存的XXXprofile | +-> 如果是类别4: | +-> 快速RAG (前10条记录) | | | v | 返回快速答案给用户 | +-> 完整RAG (详细搜索和处理) | v 生成XXXprofile | v Reflection和可能的重写 | v 异步返回给用户并缓存 . 目前我的持久化和数据存储设计：前端准备用zustand store管理全局状态，用clerk管理登陆状态，前端next.js直接用页面调用worker，不写api或者只写简单的转发api. 后端worker直接用prisma和D1 adapter去映射和调用D1来存储用户，搜索历史和深度RAG结果（XXXprofile）。然后用cloudflare durable object来维护worker的状态，比如管理快速RAG和深度RAG的进程. 安全性方面，我准备用clerk的登陆鉴权和中间件来对worker的api进行路由守卫，同时在worker添加速率限制和CROS同源策略，再加上一个cloudflare的点一下才能进入网页的防机器人功能，这样可以挡住90%的攻击。另外我考虑如何处理长时间运行的完整RAG过程，实际上我认为即便是快速RAG也是需要时间去完成的，所以我觉得无论是快速RAG还是深度RAG，可能都需要流式传输才行。比如可以把两个RAG设定为一个流程，用流式传输的管道，它可以将RAG处理的中间结果实时传送到前端。前端实时更新展示处理进度和部分结果。同时，后端继续完成完整的处理，生成XXXprofile并进行reflection。 作为一个产品原型来讲，我设计了这样的数据结构，你看看是否能支持我的业务流程：
+我准备前端用next.js app router （clerk管理登陆）, 后端用cloudflare woker, 写一个全栈的AI搜索引擎。业务流程如下：用户查询 | v 后端API接收查询 | v 意图识别LLM (返回JSON) | v 路由函数 | +-> 如果是类别1或2: 直接LLM回答 | +-> 如果是类别3: 返回缓存的XXXprofile | +-> 如果是类别4: | +-> 快速RAG (前10条记录) | | | v | 返回快速答案给用户 | +-> 完整RAG (详细搜索和处理) | v 生成XXXprofile | v Reflection和可能的重写 | v 异步返回给用户并缓存 . 目前我的持久化和数据存储设计：前端准备用zustand store管理全局状态，用clerk管理登陆状态，前端next.js直接用页面调用worker，不写api或者只写简单的转发api. 后端worker直接用prisma和D1 adapter去映射和调用D1来存储用户，搜索历史和深度RAG结果（XXXprofile）。然后用cloudflare KV来维护worker的状态，比如管理快速RAG和深度RAG的进程. 安全性方面，我准备用clerk的登陆鉴权和中间件来对worker的api进行路由守卫，同时在worker添加速率限制和CROS同源策略，再加上一个cloudflare的点一下才能进入网页的防机器人功能，这样可以挡住90%的攻击。另外我考虑如何处理长时间运行的完整RAG过程，实际上我认为即便是快速RAG也是需要时间去完成的，所以我觉得无论是快速RAG还是深度RAG，可能都需要流式传输才行。比如可以把两个RAG设定为一个流程，用流式传输的管道，它可以将RAG处理的中间结果实时传送到前端。前端实时更新展示处理进度和部分结果。同时，后端继续完成完整的处理，生成XXXprofile并进行reflection。 作为一个产品原型来讲，我设计了这样的数据结构，你看看是否能支持我的业务流程：
 
-enum IntentCategory {
-  DIRECT_LLM_ANSWER = 1,
-  CACHED_PROFILE = 2,
-  QUICK_RAG = 3,
-  FULL_RAG = 4,
-}
 
-enum SearchType {
-  text = 1,
-  image = 2,
-  video = 3,
-}
 
 // Models for D1
 type User = {
@@ -20,23 +9,26 @@ type User = {
   name?: string;
   createdAt: Date;
   updatedAt: Date;
+  queries?: string; // query ids, convert the array to string before saving and parse it when reading
 };
 
 type Query = {
   id: string;
   userId: string;
   content: string;
-  intentCategory: IntentCategory;
+  intentCategory: "DIRECT_LLM_ANSWER" | "CACHED_PROFILE" | "QUICK_RAG" | "FULL_RAG";
   createdAt: Date;
-  searchResults: SearchResult[];
+  searchResults: string; // search result ids, convert the array to string before saving and parse it when reading
+  ragResultId?: string;
+  deepRAGProfileId?: string;
 };
 
 type SearchResult = {
   id: string;
   queryId: string;
-  type: SearchType;
-  content: string; // text content or img/video url
-  metadata?: Record<string, any>; // additional metadata
+  type: "text" | "image" | "video";
+  content: string; // text or img/video url
+  metadata?: string // metadata for the search result. convert the json to string before saving and parse it when reading
   createdAt: Date;
 };
 
@@ -45,7 +37,6 @@ type RAGResult = {
   queryId: string;
   content: string;
   isQuickRAG: boolean;
-  sourceIds: string[]; // SearchResult ids
   createdAt: Date;
   updatedAt: Date;
 };
@@ -60,12 +51,15 @@ type DeepRAGProfile = {
 };
 
 
-// RAGProcess Model (for Durable Object)
+// RAGProcess Model (for KV)
 type RAGProcess = {
   id: string;
   queryId: string;
-  status: "pending" | "completed" | "failed" | "processing";
-  progress: number;
+  status: "pending" | "completed" | "failed" | "quick RAG" | "full RAG";
   createdAt: Date;
   updatedAt: Date;
 };
+然后我也写好了schema.prisma, 并且做了迁移，然后通过npx prisma generate 创建了prisma client, 
+
+
+https://backend-worker.bkchcnbj570.workers.dev/

@@ -24,11 +24,11 @@ model User {
 
 model Query {
   id                String   @id @default(uuid())
-  userId            String
+  userId            String?
   content           String
   intentCategory    String   // Enum: "DIRECT_LLM_ANSWER" | "CACHED_PROFILE" | "QUICK_RAG" | "FULL_RAG"
   createdAt         DateTime @default(now())
-  searchResults     String   // Stored as a string, needs to be parsed when read
+  searchResults     String?   // Stored as a string, needs to be parsed when read
   ragResultId       String?
   deepRAGProfileId  String?
 
