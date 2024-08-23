@@ -1,23 +1,18 @@
-import { fromHono } from "chanfana";
-import { Hono } from "hono";
-import { TaskCreate } from "./endpoints/taskCreate";
-import { TaskDelete } from "./endpoints/taskDelete";
-import { TaskFetch } from "./endpoints/taskFetch";
-import { TaskList } from "./endpoints/taskList";
+import { PrismaClient } from "@prisma/client";
+import { PrismaD1 } from "@prisma/adapter-d1";
 
-// Start a Hono app
-const app = new Hono();
+export interface Env {
+	DB: D1Database;
+}
 
-// Setup OpenAPI registry
-const openapi = fromHono(app, {
-	docs_url: "/",
-});
+export default {
+	async fetch(request, env, ctx): Promise<Response> {
+		const adapter = new PrismaD1(env.DB);
+		const prisma = new PrismaClient({ adapter });
 
-// Register OpenAPI endpoints
-openapi.get("/api/tasks", TaskList);
-openapi.post("/api/tasks", TaskCreate);
-openapi.get("/api/tasks/:taskSlug", TaskFetch);
-openapi.delete("/api/tasks/:taskSlug", TaskDelete);
-
-// Export the Hono app
-export default app;
+		const users = await prisma.user.findMany();
+		return new Response(JSON.stringify(users), {
+			headers: { "content-type": "application/json" },
+		});
+	}
+} satisfies ExportedHandler<Env>;
