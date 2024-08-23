@@ -1,0 +1,71 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+  previewFeatures = ["driverAdapters"]
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+enum IntentCategory {
+  DIRECT_LLM_ANSWER
+  CACHED_PROFILE
+  QUICK_RAG
+  FULL_RAG
+}
+
+enum SearchType {
+  text
+  image
+  video
+}
+
+model User {
+  id string @id @default(cuid())
+  email String? @unique
+  name String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  queries Query[]
+}
+
+model Query {
+  id string @id @default(cuid())
+  userId  String
+  content  String
+  intentCategory IntentCategory
+  createdAt DateTime @default(now())
+  searchResults SearchResults[]
+}
+
+model SearchResult {
+  id string @id @default(cuid())
+  queryId String
+  type SearchType
+  content String
+  metadata Json?
+  createdAt DateTime @default(now())
+}
+
+model RAGResult {
+  id string @id @default(cuid())
+  queryId String
+  content String
+  isQuickRAG Boolean
+  sourceIds String[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model DeepRAGProfile {
+  id string @id @default(cuid())
+  queryId String
+  content String
+  reflection String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}

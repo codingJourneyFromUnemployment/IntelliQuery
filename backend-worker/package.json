@@ -9,8 +9,11 @@
 		"cf-typegen": "wrangler types"
 	},
 	"dependencies": {
+		"@prisma/adapter-d1": "^5.18.0",
+		"@prisma/client": "^5.18.0",
 		"chanfana": "^2.0.2",
 		"hono": "^4.4.7",
+		"prisma": "^5.18.0",
 		"zod": "^3.23.8"
 	},
 	"devDependencies": {
