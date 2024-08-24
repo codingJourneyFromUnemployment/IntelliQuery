@@ -15,6 +15,7 @@
 		"chanfana": "^2.0.2",
 		"hono": "^4.4.7",
 		"itty-router": "^5.0.18",
+		"js-tiktoken": "^1.0.14",
 		"prisma": "^5.18.0",
 		"zod": "^3.23.8"
 	},

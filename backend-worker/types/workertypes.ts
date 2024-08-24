@@ -58,7 +58,7 @@ export type DeepRAGProfile = {
 export type RAGProcess = {
   id: string;
   queryId: string;
-  status: "pending" | "completed" | "failed" | "quick RAG" | "full RAG";
+  status: "pending" | "completed" | "failed" | "quick RAG" | "full RAG" | "intent recognition";
   createdAt: Date;
   updatedAt: Date;
 };
