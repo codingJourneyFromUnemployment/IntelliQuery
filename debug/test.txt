@@ -82,4 +82,14 @@ const FOOTER_SETUP =
   "\n\n# It's assistant's turn to reply. Remember,your reply needs to follow these criteria:\n1. You only need to send reply for this round of conversation.\n2. Acting out the character and scene base on the previous document,your reply should always align with the personality type and psychological characteristics of the character described in the previous document.\n3. Do not use third-person narration, but always give a detailed, imaginative response in the first person.\n4. Your reply must actively advance the scenario and dialogue. Don't be passive or always wait for the user's next instruction.\n\n";
 
 
+https://github.com/codingJourneyFromUnemployment/aichatbot/blob/main/services/dataService.ts
+
+https://claude.ai/chat/85961879-d619-4fef-aad9-14cb02d0126d
+
+
+https://developers.cloudflare.com/workers/tutorials/build-a-jamstack-app#render-data-from-kv
+
+https://developers.cloudflare.com/d1/tutorials/d1-and-prisma-orm
+
+https://hono.dev/docs/api/context
 
