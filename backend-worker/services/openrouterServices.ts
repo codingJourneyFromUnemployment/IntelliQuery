@@ -3,6 +3,7 @@ import {
   NonStreamingChoice,
   StreamingChoice,
 } from "../types/openrouter";
+import { Bindings } from "../types/workertypes";
 
 interface ReplyData {
   reply: string;
@@ -10,12 +11,13 @@ interface ReplyData {
 
 export async function openrouterService(
   context: string,
+  env: Bindings
 ): Promise<ReplyData> {
   if (!context) {
     throw new Error("Missing context");
   }
 
-  const current_model = process.env.OPENROUTER_MODEL;
+  const current_model = env.OPENROUTER_MODEL;
 
   try {
     const response = await fetch(
@@ -23,7 +25,7 @@ export async function openrouterService(
       {
         method: "POST",
         headers: {
-          Authorization: `Bearer ${process.env.OPENROUTER_API_KEY}`,
+          Authorization: `Bearer ${env.OPENROUTER_API_KEY}`,
           "Content-Type": "application/json",
         },
         body: JSON.stringify({

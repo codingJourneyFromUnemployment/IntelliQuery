@@ -63,3 +63,15 @@ export type RAGProcess = {
   updatedAt: Date;
 };
 
+
+// Env for backend-worker
+
+export interface Bindings {
+  // cloudflare bindings
+  DB: D1Database;
+  KV: KVNamespace;
+
+  // Environment variables
+  OPENROUTER_MODEL: string;
+  OPENROUTER_API_KEY: string;
+}

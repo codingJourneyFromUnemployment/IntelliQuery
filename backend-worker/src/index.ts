@@ -4,12 +4,10 @@ import searchMainEndpoint from "./endpoints/search";
 import { Hono } from "hono";
 import { querySchema } from "./validation/zod-validator";
 import { zValidator } from "@hono/zod-validator";
+import { Bindings } from "../types/workertypes";
 
-export interface Env {
-	DB: D1Database;
-}
 
-const app = new Hono()
+const app = new Hono<{ Bindings: Bindings }>();
 
 
 
