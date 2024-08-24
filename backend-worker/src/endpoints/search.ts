@@ -1,17 +1,19 @@
+import { Context } from "hono";
 import { Query } from "../../types/workertypes";
 
-const searchMainEndpoint = async (req: Request) => {
+const searchMainEndpoint = async (c: Context) => {
   try {
-    const query: Query = await req.json();
+    const query: Query = await c.req.json();
     const searchContent = query.content;
+    console.log(`Search content: ${searchContent}`);
 
-    return Response.json({
+    return c.json({
       data: `Searching for ${searchContent}`,
     });
   } catch (error) {
     console.error(`Error in searchMainEndpoint: ${error}`);
-    return Response.json({error: "Error in searchMainEndpoint"}, { status: 500 });  
+    return c.json({ error: "Error in searchMainEndpoint" }, 500);
   }
-}
+};
 
 export default searchMainEndpoint;
