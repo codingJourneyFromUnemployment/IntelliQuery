@@ -1,4 +1,3 @@
-import { Tiktoken, getEncoding } from "js-tiktoken";
 import { Context } from "hono";
 import { Query } from "../types/workertypes";
 
@@ -30,11 +29,6 @@ const IntentRecognition_Prompt: string = `
 
 class ContextManager {
   private readonly maxTokens: number = 100000;
-  private tokenizer: Tiktoken;
-
-  constructor() {
-    this.tokenizer = getEncoding("cl100k_base");
-  }
 
   getInitContext(): string {
     const intentRecognitionContext = IntentRecognition_Prompt;
