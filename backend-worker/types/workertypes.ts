@@ -1,5 +1,3 @@
-
-
 // Models for D1
 export type User = {
   id: string;
@@ -14,9 +12,9 @@ export type Query = {
   id: string;
   userId?: string;
   content: string;
-  intentCategory?:
-  "DIRECT_LLM_ANSWER" | "RAG_PROCESS" | "Undefined";
+  intentCategory?: "DIRECT_LLM_ANSWER" | "RAG_PROCESS" | "Undefined";
   createdAt: Date;
+
   searchResults?: string; // search result ids, convert the array to string before saving and parse it when reading
   ragResultId?: string;
   deepRAGProfileId?: string;
@@ -49,17 +47,21 @@ export type DeepRAGProfile = {
   updatedAt: Date;
 };
 
-
 // RAGProcess Model (for KV)
 
 export type RAGProcess = {
   id: string;
   queryId: string;
-  status: "pending" | "completed" | "failed" | "quick RAG" | "full RAG" | "intent recognition";
+  status:
+    | "pending"
+    | "completed"
+    | "failed"
+    | "quick RAG"
+    | "full RAG"
+    | "intent recognition";
   createdAt: Date;
   updatedAt: Date;
 };
-
 
 // Env for backend-worker
 
@@ -71,4 +73,44 @@ export interface Bindings {
   // Environment variables
   OPENROUTER_MODEL: string;
   OPENROUTER_API_KEY: string;
+  SERPER_API_KEY: string;
+}
+
+// serper types
+
+export interface SerperResult {
+  searchParameters: {
+    q: string;
+    type: string;
+    engine: string;
+  };
+  organic: Array<{
+    title: string;
+    link: string;
+    snippet: string;
+    position: number;
+    date?: string;
+    attributes?: {
+      [key: string]: string;
+    };
+    imageUrl?: string;
+    sitelinks?: Array<{
+      title: string;
+      link: string;
+    }>;
+  }>;
+  images?: Array<{
+    title: string;
+    imageUrl: string;
+    link: string;
+  }>;
+  peopleAlsoAsk?: Array<{
+    question: string;
+    snippet: string;
+    title: string;
+    link: string;
+  }>;
+  relatedSearches?: Array<{
+    query: string;
+  }>;
 }

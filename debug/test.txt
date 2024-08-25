@@ -86,6 +86,9 @@ https://github.com/codingJourneyFromUnemployment/aichatbot/blob/main/services/da
 
 https://claude.ai/chat/85961879-d619-4fef-aad9-14cb02d0126d
 
+https://claude.ai/chat/ad7e8328-0876-46e3-ab49-ed85767db56e
+
+https://dash.cloudflare.com/583088c232daa9a823dbbc787df7e6fe/workers-and-pages
 
 https://developers.cloudflare.com/workers/tutorials/build-a-jamstack-app#render-data-from-kv
 
