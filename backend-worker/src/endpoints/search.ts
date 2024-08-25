@@ -2,7 +2,7 @@ import { Context } from "hono";
 import { Query, SerperResult } from "../../types/workertypes";
 import { Bindings } from "../../types/workertypes";
 import { IntentRecognitionService } from "../../services/intentRecognitionService";
-import { serperService } from "../../services/serperService";
+import { quickRAGService } from "../../services/quickRAGService";
 
 const searchMainEndpoint = async (c: Context) => {
   try {
@@ -17,20 +17,9 @@ const searchMainEndpoint = async (c: Context) => {
       c
     );
 
-    // test serperService
-    const serperFetchBatchResponse = await serperService.serperFetchBatch(
-      queryID,
-      c
-    );
-    const serperFetchBatchResult = await serperFetchBatchResponse.json();
-
-    console.log(JSON.stringify(serperFetchBatchResult, null, 2));
-
-    return c.json({
-      data: serperFetchBatchResult,
-      message: "Serper Fetch Processed Successfully",
-      statuscode: 200,
-    });
+    // test quickRAGService
+    await quickRAGService.updateBatchRawDataAndLinks(queryID, c);
+    
     
   } catch (error) {
     console.error(`Error in searchMainEndpoint: ${error}`);

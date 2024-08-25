@@ -39,7 +39,7 @@ export const IntentRecognitionService = {
         `intentRecognitionJsonString: ${intentRecognitionJsonString}`
       );
 
-      //update RAGProcess status and query intentCategory
+      //update RAGProcess status , query.intentCategory and query.subQueries
       console.log("Updating RAGProcess status and query intentCategory");
 
       const intentRecognitionJson = JSON.parse(intentRecognitionJsonString);

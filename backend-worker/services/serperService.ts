@@ -3,30 +3,37 @@ import { Query, SerperResult } from "../types/workertypes";
 import { Context } from "hono";
 import { D1services } from "./D1services";
 
-export const serperService = {
+interface SerperBatchResult {
+  mainResult: SerperResult;
+  subResult1: SerperResult;
+  subResult2: SerperResult;
+  subResult3: SerperResult;
+}
 
-  extractLinks(serperresults: any): string[] {
+export const serperService = {
+  
+  extractLinks(serperBatchResult: SerperBatchResult): string[] {
     const links: string[] = [];
 
     function recursiveExtract(item: any): void {
-    if (typeof item === 'object' && item !== null) {
-      if (Array.isArray(item)) {
-        item.forEach(recursiveExtract);
-      } else {
-        Object.entries(item).forEach(([key, value]) => {
-          if (key === 'link' && typeof value === 'string') {
-            links.push(value);
-          } else {
-            recursiveExtract(value);
-          }
-        });
+      if (typeof item === "object" && item !== null) {
+        if (Array.isArray(item)) {
+          item.forEach(recursiveExtract);
+        } else {
+          Object.entries(item).forEach(([key, value]) => {
+            if (key === "link" && typeof value === "string") {
+              links.push(value);
+            } else {
+              recursiveExtract(value);
+            }
+          });
+        }
       }
     }
-  }
 
-  recursiveExtract(serperresults);
-  return links;
-  }, 
+    recursiveExtract(serperBatchResult);
+    return Array.from(new Set(links)); // Remove duplicates
+  },
 
   async fetchSerperResults(
     content: string,
@@ -69,7 +76,10 @@ export const serperService = {
     }
   },
 
-  async serperFetchBatch(queryID: string, c: Context): Promise<Response> {
+  async serperFetchBatch(
+    queryID: string,
+    c: Context
+  ): Promise<SerperBatchResult> {
     const serper_api_key = c.env.SERPER_API_KEY;
     const query = await D1services.fetchQueryByID(queryID, c);
 
@@ -101,10 +111,9 @@ export const serperService = {
         subResult3,
       };
 
-      return c.json(serperResults);
+      return serperResults;
     } catch (error) {
-      console.error(`Error in serperFetch for query ${queryID}:`, error);
-      return c.json({ error: "Error in serperFetch" }, 500);
+      throw new Error(`Error in serperFetchBatch: ${error}`);
     }
   },
 };
