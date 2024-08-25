@@ -9,10 +9,7 @@ const querySchema = z.object({
   userId: z.string().optional(),
   content: z.string(),
   intentCategory: z.enum([
-    "DIRECT_LLM_ANSWER",
-    "CACHED_PROFILE",
-    "QUICK_RAG",
-    "FULL_RAG",
+    "DIRECT_LLM_ANSWER", "RAG_PROCESS","Undefined"
   ]),
   createdAt: z
     .string()

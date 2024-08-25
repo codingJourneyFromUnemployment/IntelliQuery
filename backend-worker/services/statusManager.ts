@@ -53,4 +53,6 @@ class RAGProcessManager {
   }
 }
 
-export { RAGProcessManager, RAGProcessStatus };
+
+export const ragProcessManager = new RAGProcessManager();
+export {RAGProcessStatus };

@@ -26,7 +26,7 @@ model Query {
   id                String   @id @default(uuid())
   userId            String?
   content           String
-  intentCategory    String   // Enum: "DIRECT_LLM_ANSWER" | "CACHED_PROFILE" | "QUICK_RAG" | "FULL_RAG"
+  intentCategory    String?   // Enum: "DIRECT_LLM_ANSWER" | "RAG_PROCESS" | "Undefined"
   createdAt         DateTime @default(now())
   searchResults     String?   // Stored as a string, needs to be parsed when read
   ragResultId       String?

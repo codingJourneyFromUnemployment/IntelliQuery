@@ -1,29 +1,19 @@
-import { Query } from "../types/workertypes";
+import { Bindings, Query } from "../types/workertypes";
+import { createMiddleware } from "hono/factory";
+import { PrismaClient } from "@prisma/client";
+import { PrismaD1 } from "@prisma/adapter-d1";
 import { Context } from "hono";
 
-export const D1services = {
-  async createIntentRecognition(query: Query, c: Context) {
-    const prisma = c.get("prisma");
-    
-    try {
-      const newQuery : Query = await prisma.query.create({
-        data: {
-          id: query.id,
-          content: query.content,
-          intentCategory: "undefined",
-          createdAt: new Date(),
-        },
-      });
+const D1middleware = createMiddleware(async (c : Context, next) => {
+  const adapter = new PrismaD1(c.env.DB)
+  const prisma = new PrismaClient({ adapter });
+  c.set("prisma", prisma);
 
-      return newQuery;
-    } catch (error) {
-      console.error(`Error in D1services.createIntentRecognition: ${error}`);
-    }
-  }
+  await next();
+  await prisma.$disconnect();
+});
 
-  
-}
-
+export default D1middleware;
 
 
 

@@ -14,11 +14,8 @@ export type Query = {
   id: string;
   userId?: string;
   content: string;
-  intentCategory:
-    | "DIRECT_LLM_ANSWER"
-    | "CACHED_PROFILE"
-    | "QUICK_RAG"
-    | "FULL_RAG";
+  intentCategory?:
+  "DIRECT_LLM_ANSWER" | "RAG_PROCESS" | "Undefined";
   createdAt: Date;
   searchResults?: string; // search result ids, convert the array to string before saving and parse it when reading
   ragResultId?: string;
