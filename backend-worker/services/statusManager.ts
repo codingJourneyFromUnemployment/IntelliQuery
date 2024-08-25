@@ -16,7 +16,7 @@ class RAGProcessManager {
     const RAGprocess: RAGProcess = {
       id: crypto.randomUUID(),
       queryId: query.id,
-      status: "intent recognition",
+      status: RAGProcessStatus.INTENT_RECOGNITION,
       createdAt: new Date(),
       updatedAt: new Date(),
     };

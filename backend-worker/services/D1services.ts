@@ -19,6 +19,22 @@ export const D1services = {
     } catch (error) {
       console.error(`Error in D1services.createIntentRecognition: ${error}`);
     }
+  },
+
+  async updateIntentCategory(query: Query, intentCategory: string, c: Context) {
+    const prisma = c.get("prisma");
+    
+    try {
+      const updatedQuery : Query = await prisma.query.update({
+        where: { id: query.id },
+        data: {
+          intentCategory: intentCategory,
+        },
+      });
+      return updatedQuery;
+    } catch (error) {
+      console.error(`Error in D1services.updateIntentCategory: ${error}`);
+    }
   }
 
   

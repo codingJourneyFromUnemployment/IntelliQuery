@@ -10,7 +10,7 @@ const querySchema = z.object({
   content: z.string(),
   intentCategory: z.enum([
     "DIRECT_LLM_ANSWER", "RAG_PROCESS","Undefined"
-  ]),
+  ]).optional(),
   createdAt: z
     .string()
     .datetime()

@@ -1,36 +1,24 @@
 import { Context } from "hono";
 import { Query } from "../../types/workertypes";
-import { openrouterService } from "../../services/openrouterServices";
 import { Bindings } from "../../types/workertypes";
-import {
-  RAGProcessManager,
-  RAGProcessStatus,
-} from "../../services/statusManager";
 import { IntentRecognitionService } from "../../services/intentRecognitionService";
 
 const searchMainEndpoint = async (c: Context) => {
   try {
-    const ragProcessManager = new RAGProcessManager();
 
     const query: Query = await c.req.json();
-    const searchContent = query.content;
-    const queryId = query.id;
-
-    // Create RAGProcess
-    const ragProcess = await ragProcessManager.createRAGProcess(query, c);
 
     // enter the intent recognition status
-    await ragProcessManager.updateRAGProcess(
-      ragProcess.id,
-      RAGProcessStatus.INTENT_RECOGNITION,
-      c
-    );
+    
     const intentRecognitionResult = await IntentRecognitionService.intentRecognitionService(
       query,
       c
     );
 
-    return c.json({ intentRecognitionResult });
+    return c.json({ 
+      data: intentRecognitionResult,
+      message: "Intent Recognition Processed Successfully",
+    });
     
   } catch (error) {
     console.error(`Error in searchMainEndpoint: ${error}`);
