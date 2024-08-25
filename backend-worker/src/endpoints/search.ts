@@ -8,6 +8,7 @@ const searchMainEndpoint = async (c: Context) => {
   try {
 
     const query: Query = await c.req.json();
+    const queryID = query.id;
 
     // enter the intent recognition status
     
@@ -16,19 +17,17 @@ const searchMainEndpoint = async (c: Context) => {
       c
     );
 
-    // return c.json({ 
-    //   data: intentRecognitionResult,
-    //   message: "Intent Recognition Processed Successfully",
-    // });
-
     // test serperService
-    const serperResponse = await serperService.serperFetch(query, c);
-    const serperResult: SerperResult = await serperResponse.json(); 
+    const serperFetchBatchResponse = await serperService.serperFetchBatch(
+      queryID,
+      c
+    );
+    const serperFetchBatchResult = await serperFetchBatchResponse.json();
 
-    console.log(`serperResult: ${JSON.stringify(serperResult, null, 2)}`);
+    console.log(JSON.stringify(serperFetchBatchResult, null, 2));
 
     return c.json({
-      data: serperResult,
+      data: serperFetchBatchResult,
       message: "Serper Fetch Processed Successfully",
       statuscode: 200,
     });

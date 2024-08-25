@@ -1,12 +1,12 @@
-import { Query } from "../types/workertypes";
+import { Query, IntentRecognitionJson } from "../types/workertypes";
 import { Context } from "hono";
 
 export const D1services = {
   async createIntentRecognition(query: Query, c: Context) {
     const prisma = c.get("prisma");
-    
+
     try {
-      const newQuery : Query = await prisma.query.create({
+      const newQuery: Query = await prisma.query.create({
         data: {
           id: query.id,
           content: query.content,
@@ -23,9 +23,9 @@ export const D1services = {
 
   async updateIntentCategory(query: Query, intentCategory: string, c: Context) {
     const prisma = c.get("prisma");
-    
+
     try {
-      const updatedQuery : Query = await prisma.query.update({
+      const updatedQuery: Query = await prisma.query.update({
         where: { id: query.id },
         data: {
           intentCategory: intentCategory,
@@ -35,98 +35,64 @@ export const D1services = {
     } catch (error) {
       console.error(`Error in D1services.updateIntentCategory: ${error}`);
     }
+  },
+
+  async updateSubQueries(
+    query: Query,
+    intentRecognitionJson: IntentRecognitionJson,
+    c: Context
+  ) {
+    const prisma = c.get("prisma");
+
+    try {
+      const updatedQuery: Query = await prisma.query.update({
+        where: { id: query.id },
+        data: {
+          subQuery1: intentRecognitionJson.sub_questions[0],
+          subQuery2: intentRecognitionJson.sub_questions[1],
+          subQuery3: intentRecognitionJson.sub_questions[2],
+        },
+    });
+        return updatedQuery;
+      } catch (error) {
+        console.error(`Error in D1services.updateSubQueries: ${error}`);
+      }
+    },
+
+  async fetchQueryByID(queryID: string, c: Context) {
+    const prisma = c.get("prisma");
+
+    try {
+      const query = await prisma.query.findUnique({
+        where: { id: queryID },
+      });
+      return query;
+    } catch (error) {
+      console.error(`Error in D1services.fetchQueryByID: ${error}`);
+    }
   }
 
-
-  
-}
+};
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-// // Models for D1
-// export type User = {
-//   id: string;
-//   email?: string;
-//   name?: string;
-//   createdAt: Date;
-//   updatedAt: Date;
-//   queries?: string; // query ids, convert the array to string before saving and parse it when reading
-// };
 
 // export type Query = {
 //   id: string;
 //   userId?: string;
 //   content: string;
-//   intentCategory:
-//     | "DIRECT_LLM_ANSWER"
-//     | "CACHED_PROFILE"
-//     | "QUICK_RAG"
-//     | "FULL_RAG";
+//   intentCategory?: "DIRECT_LLM_ANSWER" | "RAG_PROCESS" | "Undefined";
 //   createdAt: Date;
+//   subQuery1?: string;
+//   subQuery2?: string;
+//   subQuery3?: string;
 //   searchResults?: string; // search result ids, convert the array to string before saving and parse it when reading
 //   ragResultId?: string;
 //   deepRAGProfileId?: string;
 // };
 
-// export type SearchResult = {
-//   id: string;
-//   queryId: string;
-//   type: "text" | "image" | "video";
-//   content: string; // text or img/video url
-//   metadata?: string; // metadata for the search result. convert the json to string before saving and parse it when reading
-//   createdAt: Date;
-// };
-
-// export type RAGResult = {
-//   id: string;
-//   queryId: string;
-//   content: string;
-//   isQuickRAG: boolean;
-//   createdAt: Date;
-//   updatedAt: Date;
-// };
-
-// export type DeepRAGProfile = {
-//   id: string;
-//   queryId: string;
-//   content: string;
-//   reflection: string | null;
-//   createdAt: Date;
-//   updatedAt: Date;
-// };
-
-
-// // RAGProcess Model (for KV)
-
-// export type RAGProcess = {
-//   id: string;
-//   queryId: string;
-//   status: "pending" | "completed" | "failed" | "quick RAG" | "full RAG" | "intent recognition";
-//   createdAt: Date;
-//   updatedAt: Date;
-// };
-
-
-// // Env for backend-worker
-
-// export interface Bindings {
-//   // cloudflare bindings
-//   DB: D1Database;
-//   KV: KVNamespace;
-
-//   // Environment variables
-//   OPENROUTER_MODEL: string;
-//   OPENROUTER_API_KEY: string;
-// }
+// export interface IntentRecognitionJson {
+//   intent_category: string;
+//   sub_questions: string[];
+//   confidence_score: number;
+// } 

@@ -28,6 +28,9 @@ model Query {
   content           String
   intentCategory    String?   // Enum: "DIRECT_LLM_ANSWER" | "RAG_PROCESS" | "Undefined"
   createdAt         DateTime @default(now())
+  subQuery1         String?
+  subQuery2         String?
+  subQuery3         String?
   searchResults     String?   // Stored as a string, needs to be parsed when read
   ragResultId       String?
   deepRAGProfileId  String?

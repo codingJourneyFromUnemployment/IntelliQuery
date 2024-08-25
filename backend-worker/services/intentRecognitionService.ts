@@ -52,7 +52,8 @@ export const IntentRecognitionService = {
         const updatedQuery = await D1services.updateIntentCategory(query, newIntentCategory, c);
       } else if(intentCategory === "2") {
         const newIntentCategory = "RAG_PROCESS";
-        const updatedQuery = await D1services.updateIntentCategory(query, newIntentCategory, c);
+        let updatedQuery = await D1services.updateIntentCategory(query, newIntentCategory, c);
+        updatedQuery = await D1services.updateSubQueries(query, intentRecognitionJson, c);
       } else {
         throw new Error("Invalid intent category");
       }

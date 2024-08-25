@@ -14,7 +14,9 @@ export type Query = {
   content: string;
   intentCategory?: "DIRECT_LLM_ANSWER" | "RAG_PROCESS" | "Undefined";
   createdAt: Date;
-
+  subQuery1?: string;
+  subQuery2?: string;
+  subQuery3?: string;
   searchResults?: string; // search result ids, convert the array to string before saving and parse it when reading
   ragResultId?: string;
   deepRAGProfileId?: string;
@@ -24,8 +26,8 @@ export type SearchResult = {
   id: string;
   queryId: string;
   type: "text" | "image" | "video";
-  content: string; // text or img/video url
-  metadata?: string; // metadata for the search result. convert the json to string before saving and parse it when reading
+  content: string; 
+  metadata?: string; 
   createdAt: Date;
 };
 
@@ -61,6 +63,8 @@ export type RAGProcess = {
     | "intent recognition";
   createdAt: Date;
   updatedAt: Date;
+  serperBatchRawData?: string;
+  searchLinks?: string[];
 };
 
 // Env for backend-worker
@@ -76,7 +80,7 @@ export interface Bindings {
   SERPER_API_KEY: string;
 }
 
-// serper types
+// other types
 
 export interface SerperResult {
   searchParameters: {
@@ -114,3 +118,9 @@ export interface SerperResult {
     query: string;
   }>;
 }
+
+export interface IntentRecognitionJson {
+  intent_category: string;
+  sub_questions: string[];
+  confidence_score: number;
+} 
