@@ -59,7 +59,7 @@ export const IntentRecognitionService = {
       }
       
       await ragProcessManager.updateRAGProcess(
-        ragProcess.id,
+        c.env.currentRAGProcessId,
         RAGProcessStatus.PENDING,
         c
       );

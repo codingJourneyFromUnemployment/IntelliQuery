@@ -21,7 +21,11 @@ export const quickRAGService = {
 
     console.log(`start updating RAGProcess and serperBatchRawDataAndLinks`);
     
-    await ragProcessManager.updateRAGProcess(queryID, currentStatus, c);
+    await ragProcessManager.updateRAGProcess(
+      c.env.currentRAGProcessId,
+      currentStatus,
+      c
+    );
 
     console.log(`updated RAGProcess status to ${currentStatus}`);
     console.log(`updating serperBatchRawDataAndLinks`);

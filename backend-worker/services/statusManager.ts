@@ -22,6 +22,7 @@ class RAGProcessManager {
     };
 
     await c.env.RAGProcess.put(RAGprocess.id, JSON.stringify(RAGprocess));
+    c.env.currentRAGProcessId = RAGprocess.id;
 
     return RAGprocess;
   }

@@ -19,6 +19,9 @@ export async function openrouterService(
 
   const current_model = env.OPENROUTER_MODEL;
 
+  console.log(`current_model: ${current_model}`);
+  console.log(`OpenRouter API key: ${env.OPENROUTER_API_KEY}`);
+
   try {
     const response = await fetch(
       "https://openrouter.ai/api/v1/chat/completions",
@@ -60,7 +63,7 @@ export async function openrouterService(
 
     return { reply };
   } catch (error) {
-    console.error("Error in chatWithDolphin:", error);
+    console.error("Error in openrouterService", error);
     throw new Error(
       `API request failed: ${
         error instanceof Error ? error.message : String(error)
