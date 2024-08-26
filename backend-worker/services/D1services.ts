@@ -1,4 +1,5 @@
-import { Query, IntentRecognitionJson } from "../types/workertypes";
+import { string } from "zod";
+import { Query, SearchResult, IntentRecognitionJson } from "../types/workertypes";
 import { Context } from "hono";
 
 export const D1services = {
@@ -52,12 +53,12 @@ export const D1services = {
           subQuery2: intentRecognitionJson.sub_questions[1],
           subQuery3: intentRecognitionJson.sub_questions[2],
         },
-    });
-        return updatedQuery;
-      } catch (error) {
-        console.error(`Error in D1services.updateSubQueries: ${error}`);
-      }
-    },
+      });
+      return updatedQuery;
+    } catch (error) {
+      console.error(`Error in D1services.updateSubQueries: ${error}`);
+    }
+  },
 
   async fetchQueryByID(queryID: string, c: Context) {
     const prisma = c.get("prisma");
@@ -70,8 +71,32 @@ export const D1services = {
     } catch (error) {
       console.error(`Error in D1services.fetchQueryByID: ${error}`);
     }
-  }
+  },
 
+  async createSearchResult(
+    queryID: string,
+    serperBatchRawData: string,
+    searchLinks: string,
+    c: Context
+  ) {
+    const prisma = c.get("prisma");
+
+    try {
+      const newSearchResult: SearchResult = await prisma.searchResult.create({
+        data: {
+          queryId: queryID,
+          type: "text",
+          serperBatchRawData: serperBatchRawData,
+          searchLinks: searchLinks,
+          createdAt: new Date(),
+        },
+      });
+      return newSearchResult;
+    } catch (error) {
+      console.error(`Error in D1services.createSearchResult: ${error}`);
+      throw error; 
+    }
+  },
 };
 
 

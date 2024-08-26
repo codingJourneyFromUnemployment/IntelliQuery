@@ -42,8 +42,8 @@ model SearchResult {
   id        String   @id @default(uuid())
   queryId   String
   type      String   // Enum: "text" | "image" | "video"
-  content   String
-  metadata  String?  // Stored as a string, needs to be parsed when read
+  serperBatchRawData   String? // Stored as a string, needs to be parsed when read
+  searchLinks  String?  // Stored as a string, needs to be parsed when read
   createdAt DateTime @default(now())
 
   @@map("search_results")

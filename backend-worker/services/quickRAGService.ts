@@ -12,17 +12,23 @@ export const quickRAGService = {
     const currentStatus = RAGProcessStatus.QUICK_RAG;
     const rawData = await serperService.serperFetchBatch(queryID, c);
     
-    const searchLinks = serperService.extractLinks(rawData);
+    const searchLinksArray = serperService.extractLinks(rawData);
+
     const newRawData = JSON.stringify(rawData);
+    const searchLinks = JSON.stringify(searchLinksArray);
     console.log(`newRawData: ${newRawData}`);
     console.log(`searchLinks: ${searchLinks}`);
+
+    console.log(`start updating RAGProcess and serperBatchRawDataAndLinks`);
     
     await ragProcessManager.updateRAGProcess(queryID, currentStatus, c);
-    await ragProcessManager.updateSerperBatchRawData(queryID, newRawData, c);
-    await ragProcessManager.updateSearchLinks(queryID, searchLinks, c);
+
+    console.log(`updated RAGProcess status to ${currentStatus}`);
+    console.log(`updating serperBatchRawDataAndLinks`);
+
+    await D1services.createSearchResult(queryID, newRawData, searchLinks, c);
+
+    console.log(`updated serperBatchRawDataAndLinks`);
   }
-
-
-
 
 }

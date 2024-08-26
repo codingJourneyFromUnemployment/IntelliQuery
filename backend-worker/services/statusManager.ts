@@ -48,34 +48,6 @@ class RAGProcessManager {
     return RAGprocess;
   }
 
-  async updateSearchLinks(
-    id: string,
-    searchLinks: string[],
-    c: Context
-  ): Promise<RAGProcess> {
-    const RAGprocess = await this.fetchRAGProcess(id, c);
-    RAGprocess.searchLinks = searchLinks;
-    RAGprocess.updatedAt = new Date();
-
-    await c.env.RAGProcess.put(RAGprocess.id, JSON.stringify(RAGprocess));
-
-    return RAGprocess
-  }
-
-  async updateSerperBatchRawData(
-    id: string,
-    serperBatchRawData: string,
-    c: Context
-  ): Promise<RAGProcess> {
-    const RAGprocess = await this.fetchRAGProcess(id, c);
-    RAGprocess.serperBatchRawData = serperBatchRawData;
-    RAGprocess.updatedAt = new Date();
-
-    await c.env.RAGProcess.put(RAGprocess.id, JSON.stringify(RAGprocess));
-
-    return RAGprocess;
-  }
-
   async deleteRAGProcess(id: string, c: Context): Promise<void> {
     await c.env.RAGProcess.delete(id);
   }

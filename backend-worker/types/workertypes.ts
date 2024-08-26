@@ -26,8 +26,8 @@ export type SearchResult = {
   id: string;
   queryId: string;
   type: "text" | "image" | "video";
-  content: string; 
-  metadata?: string; 
+  serperBatchRawData?: string; // serper batch raw data, jsonStringify before saving and parse it when reading
+  searchLinks?: string; // search links, convert the array to string before saving and parse it when reading
   createdAt: Date;
 };
 
@@ -63,8 +63,6 @@ export type RAGProcess = {
     | "intent recognition";
   createdAt: Date;
   updatedAt: Date;
-  serperBatchRawData?: string;
-  searchLinks?: string[];
 };
 
 // Env for backend-worker
