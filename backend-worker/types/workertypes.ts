@@ -17,7 +17,7 @@ export type Query = {
   subQuery1?: string;
   subQuery2?: string;
   subQuery3?: string;
-  searchResults?: string; // search result ids, convert the array to string before saving and parse it when reading
+  searchResults?: string; // search result id
   ragResultId?: string;
   deepRAGProfileId?: string;
 };

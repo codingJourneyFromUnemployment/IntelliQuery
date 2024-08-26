@@ -5,7 +5,7 @@ import {
 } from "../types/openrouter";
 import { Bindings } from "../types/workertypes";
 
-interface ReplyData {
+export interface ReplyData {
   reply: string;
 }
 

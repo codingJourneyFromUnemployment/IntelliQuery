@@ -91,6 +91,14 @@ export const D1services = {
           createdAt: new Date(),
         },
       });
+
+      await prisma.query.update({
+        where: { id: queryID },
+        data: {
+          searchResults: newSearchResult.id,
+        },
+      });
+
       return newSearchResult;
     } catch (error) {
       console.error(`Error in D1services.createSearchResult: ${error}`);

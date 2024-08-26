@@ -6,23 +6,23 @@ import { quickRAGService } from "../../services/quickRAGService";
 
 const searchMainEndpoint = async (c: Context) => {
   try {
-
     const query: Query = await c.req.json();
     const queryID = query.id;
 
     // enter the intent recognition status
-    
-    const intentRecognitionResult = await IntentRecognitionService.intentRecognitionService(
-      query,
-      c
+
+    const intentRecognitionResult =
+      await IntentRecognitionService.intentRecognitionService(query, c);
+
+    // enter the quickRAGService
+    const quickRAGReply = await quickRAGService.fullQuickRAGProcess(
+      queryID,
+      c,
+      query
     );
 
-    // test quickRAGService
-    await quickRAGService.updateBatchRawDataAndLinks(queryID, c);
+    return c.json({ quickRAGReply: quickRAGReply });
 
-    return c.json({ intentRecognitionResult }, 200);
-    
-    
   } catch (error) {
     console.error(`Error in searchMainEndpoint: ${error}`);
     return c.json({ error: "Error in searchMainEndpoint" }, 500);
