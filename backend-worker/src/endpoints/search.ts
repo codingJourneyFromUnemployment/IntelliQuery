@@ -15,11 +15,9 @@ const searchMainEndpoint = async (c: Context) => {
       await IntentRecognitionService.intentRecognitionService(query, c);
 
     // enter the quickRAGService
-    const quickRAGReply = await quickRAGService.fullQuickRAGProcess(
-      queryID,
-      c,
-      query
-    );
+    const newRAGResult = await quickRAGService.fullQuickRAGProcess(queryID, c, query);
+
+    const quickRAGReply = newRAGResult.content;
 
     return c.json({ quickRAGReply: quickRAGReply });
 

@@ -105,6 +105,68 @@ export const D1services = {
       throw error; 
     }
   },
+
+  async createRAGresult(queryID: string, content: string, c: Context) {
+    const prisma = c.get("prisma");
+
+    try {
+      const newRAGResult = await prisma.RAGResult.create({
+        data: {
+          queryId: queryID,
+          content: content,
+          isQuickRAG: true,
+          createdAt: new Date(),
+        },
+      });
+
+      await prisma.query.update({
+        where: { id: queryID },
+        data: {
+          ragResultId: newRAGResult.id,
+        },
+      });
+
+      return newRAGResult;
+    } catch (error) {
+      console.error(`Error in D1services.createRAGresult: ${error}`);
+      throw error;
+    }
+  },
+
+  async fetchSearchResultByQueryId(queryID: string, c: Context) {
+    const prisma = c.get("prisma");
+
+    try {
+      const searchResult = await prisma.searchResult.findUnique({
+        where: { queryId: queryID },
+      });
+      return searchResult;
+    } catch (error) {
+      console.error(`Error in D1services.fetchSearchResultByQueryId: ${error}`);
+    }
+  },
+
+  async extractLinksByQueryId(queryID: string, c: Context) {
+    try {
+      const searchResult = await this.fetchSearchResultByQueryId(queryID, c);
+      const searchLinksString = searchResult.searchLinks;
+      const searchLinks = JSON.parse(searchLinksString);
+      return searchLinks;
+      
+    } catch (error) {
+      console.error(`Error in D1services.extractLinksByQueryId: ${error}`);
+    }
+  },
+
+  async fetchBatchRawDataByQueryId(queryID: string, c: Context) {
+    try {
+      const searchResult = await this.fetchSearchResultByQueryId(queryID, c);
+      const serperBatchRawData = searchResult.serperBatchRawData;
+      return serperBatchRawData;
+    } catch (error) {
+      console.error(`Error in D1services.fetchBatchRawDataByQueryId: ${error}`);
+    }
+  }
 };
 
 
