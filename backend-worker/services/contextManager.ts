@@ -27,6 +27,8 @@ const IntentRecognition_Prompt: string = `
 ## 用户输入的自然语言搜索需求如下：\n
 `;
 
+const QuickRAG_prompt: string = ``;
+
 class ContextManager {
   private readonly maxTokens: number = 100000;
 

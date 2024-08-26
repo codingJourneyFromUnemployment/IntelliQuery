@@ -4,6 +4,7 @@ import { Context } from "hono";
 import { Query } from "../types/workertypes";
 import { ragProcessManager, RAGProcessStatus } from "./statusManager";
 import { D1services } from "./D1services";
+import { openrouterService } from "./openrouterServices";
 
 export const quickRAGService = {
   
@@ -33,6 +34,10 @@ export const quickRAGService = {
     await D1services.createSearchResult(queryID, newRawData, searchLinks, c);
 
     console.log(`updated serperBatchRawDataAndLinks`);
+  }
+
+  async fetchQuickRAG(query: Query, c: Context) {
+
   }
 
 }

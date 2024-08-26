@@ -19,6 +19,8 @@ const searchMainEndpoint = async (c: Context) => {
 
     // test quickRAGService
     await quickRAGService.updateBatchRawDataAndLinks(queryID, c);
+
+    return c.json({ intentRecognitionResult }, 200);
     
     
   } catch (error) {
