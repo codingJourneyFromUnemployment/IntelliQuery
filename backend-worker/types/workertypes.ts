@@ -76,6 +76,7 @@ export interface Bindings {
   OPENROUTER_MODEL: string;
   OPENROUTER_API_KEY: string;
   SERPER_API_KEY: string;
+  JINA_API_KEY: string;
   currentRAGProcessId: string;
 }
 
