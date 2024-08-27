@@ -61,6 +61,7 @@ export type RAGProcess = {
     | "quick RAG"
     | "full RAG"
     | "intent recognition";
+  fullRAGRawContent?: string;
   createdAt: Date;
   updatedAt: Date;
 };

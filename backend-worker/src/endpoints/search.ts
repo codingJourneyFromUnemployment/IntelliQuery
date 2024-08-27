@@ -21,9 +21,10 @@ const searchMainEndpoint = async (c: Context) => {
     const quickRAGReply = newRAGResult.content;
 
     // enter the deepRAGService
+
     const newDeepRAGProfile = await deepRAGService.fetchDeepRAGFromJina(queryID, c);
-    const content = newDeepRAGProfile.content;
-    return c.json({ deepRAGcontent: content});
+    
+    return c.json({ statuscode : 200});
 
   } catch (error) {
     console.error(`Error in searchMainEndpoint: ${error}`);

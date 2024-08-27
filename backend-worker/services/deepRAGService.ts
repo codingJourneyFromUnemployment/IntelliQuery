@@ -1,6 +1,11 @@
 import { contextManager } from "./contextManager";
 import { Context } from "hono";
-import { Query, SearchResult, DeepRAGProfile } from "../types/workertypes";
+import {
+  Query,
+  SearchResult,
+  DeepRAGProfile,
+  RAGProcess,
+} from "../types/workertypes";
 import { ragProcessManager, RAGProcessStatus } from "./statusManager";
 import { D1services } from "./D1services";
 import { openrouterService, ReplyData } from "./openrouterServices";
@@ -26,22 +31,22 @@ export const deepRAGService = {
     return Links;
   },
 
-  async fetchDeepRAGFromJina(
-    queryID: string,
-    c: Context
-  ): Promise<DeepRAGProfile> {
+  async fetchDeepRAGFromJina(queryID: string, c: Context): Promise<RAGProcess> {
     console.log(`\nfetchDeepRAGFromJina`);
     const linksJsonParse = await this.fetchLinks(queryID, c);
     const deepRAGResults = await jinaService.jinaFetchBatch(linksJsonParse, c);
     const deepRAGProfileString = JSON.stringify(deepRAGResults);
-    const newDeepRAGProfile = await D1services.createDeepRAGProfile(
-      queryID,
+    const currentRAGProcess = await ragProcessManager.updateFullRAGRawContent(
+      c.env.currentRAGProcessId,
       deepRAGProfileString,
       c
     );
+    
 
-    console.log(`\ncreated new DeepRAGProfile, and updated query with deepRAGProfileId`);
+    console.log(
+      `\ncreated DeepRAGProfile and updated RAGProcess with raw content`
+    );
 
-    return newDeepRAGProfile;
+    return currentRAGProcess;
   },
 };

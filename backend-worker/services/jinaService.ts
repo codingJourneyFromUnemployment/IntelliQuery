@@ -1,6 +1,7 @@
 import { Context } from "hono";
 
 export const jinaService = {
+
   chunkArray(array: string[], size: number): string[][] {
     const chunked: string[][] = [];
     for (let i = 0; i < array.length; i += size) {
@@ -14,7 +15,7 @@ export const jinaService = {
       return [];
     }
 
-    const batchSize = 10; // 批处理大小设为10
+    const batchSize = 10;
     const batches = this.chunkArray(links, batchSize);
     const results: string[] = [];
     const failedUrls: string[] = [];
@@ -34,9 +35,29 @@ export const jinaService = {
         } failures`
       );
 
-      // 等待0.1秒
+      // If all URLs in a full batch fail, stop processing
+      if (
+        batchResults.failures.length === batchSize &&
+        batch.length === batchSize
+      ) {
+        throw new Error(
+          "All URLs in a full batch failed. It must be a Jina API issue."
+        );
+      }
+
+      // For the last batch or partial batches, log a warning if all fail
+      if (
+        batchResults.failures.length === batch.length &&
+        i === batches.length - 1
+      ) {
+        console.warn(
+          "All URLs in the final batch failed. This might indicate an issue, but processing has completed."
+        );
+      }
+
+      // Wait for 0.1 seconds between batches
       if (i < batches.length - 1) {
-        await new Promise((resolve) => setTimeout(resolve, 100));
+        await new Promise((resolve) => setTimeout(resolve, 5000));
       }
     }
 
@@ -95,10 +116,10 @@ export const jinaService = {
           if (attempt === maxRetries - 1) {
             throw error;
           }
-          // 只对网络错误进行重试，等待时间设为1秒
+          // Only retry for network connection issues
           await new Promise((resolve) => setTimeout(resolve, 1000));
         } else {
-          // 对于其他错误，直接抛出，不进行重试
+          // For all other errors, including HTTP errors, throw immediately
           console.error(`Non-network error for ${targetUrl}:`, error);
           throw error;
         }
@@ -115,7 +136,7 @@ export const jinaService = {
 
     const headers = {
       Authorization: `Bearer ${c.env.JINA_API_KEY}`,
-      "X-Timeout": "10",
+      "X-Timeout": "5",
       "X-With-Images-Summary": "true",
       "X-With-Generated-Alt": "true",
     };

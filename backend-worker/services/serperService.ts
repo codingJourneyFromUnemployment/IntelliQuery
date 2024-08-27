@@ -31,7 +31,7 @@ export const serperService = {
       }
     }
 
-    recursiveExtract(serperBatchResult);
+    recursiveExtract(serperBatchResult.mainResult);
     return Array.from(new Set(links)); // Remove duplicates
   },
 

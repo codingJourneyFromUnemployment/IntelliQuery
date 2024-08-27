@@ -52,6 +52,20 @@ class RAGProcessManager {
   async deleteRAGProcess(id: string, c: Context): Promise<void> {
     await c.env.RAGProcess.delete(id);
   }
+
+  async updateFullRAGRawContent(
+    id: string,
+    fullRAGRawContent: string,
+    c: Context
+  ):Promise<RAGProcess> {
+    const RAGprocess = await this.fetchRAGProcess(id, c);
+    RAGprocess.fullRAGRawContent = fullRAGRawContent;
+    RAGprocess.updatedAt = new Date();
+
+    await c.env.RAGProcess.put(RAGprocess.id, JSON.stringify(RAGprocess));
+
+    return RAGprocess;
+  }
 }
 
 
