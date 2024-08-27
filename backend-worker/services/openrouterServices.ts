@@ -20,7 +20,6 @@ export async function openrouterService(
   const current_model = env.OPENROUTER_MODEL;
 
   console.log(`current_model: ${current_model}`);
-  console.log(`OpenRouter API key: ${env.OPENROUTER_API_KEY}`);
 
   try {
     const response = await fetch(

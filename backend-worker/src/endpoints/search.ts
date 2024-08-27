@@ -3,6 +3,7 @@ import { Query, SerperResult } from "../../types/workertypes";
 import { Bindings } from "../../types/workertypes";
 import { IntentRecognitionService } from "../../services/intentRecognitionService";
 import { quickRAGService } from "../../services/quickRAGService";
+import { deepRAGService } from "../../services/deepRAGService";
 
 const searchMainEndpoint = async (c: Context) => {
   try {
@@ -19,7 +20,10 @@ const searchMainEndpoint = async (c: Context) => {
 
     const quickRAGReply = newRAGResult.content;
 
-    return c.json({ quickRAGReply: quickRAGReply });
+    // enter the deepRAGService
+    const newDeepRAGProfile = await deepRAGService.fetchDeepRAGFromJina(queryID, c);
+    const content = newDeepRAGProfile.content;
+    return c.json({ deepRAGcontent: content});
 
   } catch (error) {
     console.error(`Error in searchMainEndpoint: ${error}`);
