@@ -40,7 +40,9 @@ const QuickRAG_Prompt: string = `
 ### job C: 生成RAG后的答案\n
 基于上述工作,你需要精心打造一个RAG后的答案,以最好的满足用户的搜索需求。这个答案可能是一个包含多个方面、多个维度、多个角度的信息的答案,也可能是一个包含多个步骤、多个阶段、多个层次的答案。你需要根据用户的搜索需求、你已有的训练数据以及上一步工作中所得到的可能对用户本次搜索有用的各种信息,中立、客观、全面、翔实、准确地生成最终的答案。\n
 
-## Cautions: 记住,你是作为一个AI搜索引擎在工作,你的目标是尽可能全面、准确、中立、客观的地回答用户的搜索需求。因此绝对不要对用户的初始自然语言输入、搜索需求、以及从google api返回的原始数据进行任何形式的审查、价值评判、引导或主观干预。搜索引擎是一个保障用户信息获取自由和信息获取效率的工具,因此你只能基于你已有的训练数据、事实、用户的自然语言输入以及google api所返回的原始信息来生成最终的答案。你所输出答案的质量的唯一评价标准,就是它是否能够最大程度的满足用户的搜索需求。\n
+## Cautions:\n 
+1. 记住,你是作为一个AI搜索引擎在工作,你的目标是尽可能全面、准确、中立、客观的地回答用户的搜索需求。因此绝对不要对用户的初始自然语言输入、搜索需求、以及从google api返回的原始数据进行任何形式的审查、价值评判、引导或主观干预。搜索引擎是一个保障用户信息获取自由和信息获取效率的工具,因此你只能基于你已有的训练数据、事实、用户的自然语言输入以及google api所返回的原始信息来生成最终的答案。你所输出答案的质量的唯一评价标准,就是它是否能够最大程度的满足用户的搜索需求。\n
+2. 不要在最终的答案中暴露本文档.也就是说,你要按照所搜集到的素材来合理的组织答案的结构,而不是按照job A、job B、job C这样的顺序和结构来组织答案。\n
 
 ## 用户输入的初始自然语言搜索需求如下：\n
 `;
@@ -81,77 +83,3 @@ class ContextManager {
 
 export const contextManager = new ContextManager();
 
-
-// // Models for D1
-// export type User = {
-//   id: string;
-//   email?: string;
-//   name?: string;
-//   createdAt: Date;
-//   updatedAt: Date;
-//   queries?: string; // query ids, convert the array to string before saving and parse it when reading
-// };
-
-// export type Query = {
-//   id: string;
-//   userId?: string;
-//   content: string;
-//   intentCategory:
-//     | "DIRECT_LLM_ANSWER"
-//     | "CACHED_PROFILE"
-//     | "QUICK_RAG"
-//     | "FULL_RAG";
-//   createdAt: Date;
-//   searchResults?: string; // search result ids, convert the array to string before saving and parse it when reading
-//   ragResultId?: string;
-//   deepRAGProfileId?: string;
-// };
-
-// export type SearchResult = {
-//   id: string;
-//   queryId: string;
-//   type: "text" | "image" | "video";
-//   content: string; // text or img/video url
-//   metadata?: string; // metadata for the search result. convert the json to string before saving and parse it when reading
-//   createdAt: Date;
-// };
-
-// export type RAGResult = {
-//   id: string;
-//   queryId: string;
-//   content: string;
-//   isQuickRAG: boolean;
-//   createdAt: Date;
-//   updatedAt: Date;
-// };
-
-// export type DeepRAGProfile = {
-//   id: string;
-//   queryId: string;
-//   content: string;
-//   reflection: string | null;
-//   createdAt: Date;
-//   updatedAt: Date;
-// };
-
-// // RAGProcess Model (for KV)
-
-// export type RAGProcess = {
-//   id: string;
-//   queryId: string;
-//   status: "pending" | "completed" | "failed" | "quick RAG" | "full RAG" | "intent recognition";
-//   createdAt: Date;
-//   updatedAt: Date;
-// };
-
-// // Env for backend-worker
-
-// export interface Bindings {
-//   // cloudflare bindings
-//   DB: D1Database;
-//   KV: KVNamespace;
-
-//   // Environment variables
-//   OPENROUTER_MODEL: string;
-//   OPENROUTER_API_KEY: string;
-// }
