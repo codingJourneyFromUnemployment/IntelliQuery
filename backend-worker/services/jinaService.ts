@@ -1,7 +1,6 @@
 import { Context } from "hono";
 
 export const jinaService = {
-  // 将链接数组分割成指定大小的批次
   chunkArray(array: string[], size: number): string[][] {
     const chunked: string[][] = [];
     for (let i = 0; i < array.length; i += size) {
@@ -10,23 +9,105 @@ export const jinaService = {
     return chunked;
   },
 
-  // 处理单个批次的请求
-  async processBatch(batch: string[], c: Context): Promise<string[]> {
-    const promises = batch.map((link) => this.fetchJinaResults(link, c));
-    const results = await Promise.allSettled(promises);
-    return results
-      .filter(
-        (result): result is PromiseFulfilledResult<string> =>
-          result.status === "fulfilled"
-      )
-      .map((result) => result.value);
+  async jinaFetchBatch(links: string[], c: Context): Promise<string[]> {
+    if (links.length === 0) {
+      return [];
+    }
+
+    const batchSize = 10; // 批处理大小设为10
+    const batches = this.chunkArray(links, batchSize);
+    const results: string[] = [];
+    const failedUrls: string[] = [];
+
+    for (let i = 0; i < batches.length; i++) {
+      const batch = batches[i];
+      console.log(`Processing batch ${i + 1} of ${batches.length}`);
+
+      const batchResults = await this.processBatch(batch, c);
+
+      results.push(...batchResults.successes);
+      failedUrls.push(...batchResults.failures.map((f) => f.url));
+
+      console.log(
+        `Batch ${i + 1} results: ${batchResults.successes.length} successes, ${
+          batchResults.failures.length
+        } failures`
+      );
+
+      // 等待0.1秒
+      if (i < batches.length - 1) {
+        await new Promise((resolve) => setTimeout(resolve, 100));
+      }
+    }
+
+    console.log(
+      `Overall results: ${results.length} successes, ${failedUrls.length} failures`
+    );
+    console.log("Failed URLs:", failedUrls);
+
+    return results;
   },
 
-  async fetchJinaResults(
+  async processBatch(
+    batch: string[],
+    c: Context
+  ): Promise<{
+    successes: string[];
+    failures: { url: string; error: Error }[];
+  }> {
+    const promises = batch.map((link) =>
+      this.fetchJinaResultsWithRetry(link, c)
+    );
+    const results = await Promise.allSettled(promises);
+
+    const successes: string[] = [];
+    const failures: { url: string; error: Error }[] = [];
+
+    results.forEach((result, index) => {
+      if (result.status === "fulfilled") {
+        successes.push(result.value);
+      } else {
+        failures.push({ url: batch[index], error: result.reason });
+      }
+    });
+
+    return { successes, failures };
+  },
+
+  async fetchJinaResultsWithRetry(
     targetUrl: string,
     c: Context,
     maxRetries = 3
   ): Promise<string> {
+    for (let attempt = 0; attempt < maxRetries; attempt++) {
+      try {
+        const result = await this.fetchJinaResults(targetUrl, c);
+        return result;
+      } catch (error) {
+        if (
+          error instanceof Error &&
+          error.message.includes("Network connection lost")
+        ) {
+          console.error(
+            `Network error on attempt ${attempt + 1} for ${targetUrl}:`,
+            error
+          );
+          if (attempt === maxRetries - 1) {
+            throw error;
+          }
+          // 只对网络错误进行重试，等待时间设为1秒
+          await new Promise((resolve) => setTimeout(resolve, 1000));
+        } else {
+          // 对于其他错误，直接抛出，不进行重试
+          console.error(`Non-network error for ${targetUrl}:`, error);
+          throw error;
+        }
+      }
+    }
+    throw new Error("Unexpected end of retry loop");
+  },
+
+  async fetchJinaResults(targetUrl: string, c: Context): Promise<string> {
     console.log(`Fetching Jina results from ${targetUrl}`);
 
     const baseUrl = "https://r.jina.ai/";
@@ -39,56 +120,15 @@ export const jinaService = {
       "X-With-Generated-Alt": "true",
     };
 
-    for (let attempt = 0; attempt < maxRetries; attempt++) {
-      try {
-        const response = await fetch(fullUrl, {
-          method: "GET",
-          headers: headers,
-        });
+    const response = await fetch(fullUrl, {
+      method: "GET",
+      headers: headers,
+    });
 
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-
-        return await response.text();
-      } catch (error) {
-        console.error(`Attempt ${attempt + 1} failed:`, error);
-        if (attempt === maxRetries - 1) {
-          console.error("All retry attempts failed");
-          throw error;
-        }
-        await new Promise((resolve) =>
-          setTimeout(resolve, 1000 * Math.pow(2, attempt))
-        );
-      }
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
     }
 
-    throw new Error("Unexpected end of retry loop");
-  },
-
-  async jinaFetchBatch(links: string[], c: Context): Promise<string[]> {
-    if (links.length === 0) {
-      return [];
-    }
-
-    const batchSize = 190; // 每批处理190个请求
-    const batches = this.chunkArray(links, batchSize);
-    const results: string[] = [];
-
-    for (const batch of batches) {
-      const batchResults = await this.processBatch(batch, c);
-      results.push(...batchResults);
-
-      // 如果还有更多批次要处理，则等待一秒
-      if (batch !== batches[batches.length - 1]) {
-        await new Promise((resolve) => setTimeout(resolve, 1000));
-      }
-    }
-
-    console.log(
-      `Successfully fetched ${results.length} out of ${links.length} requests`
-    );
-
-    return results;
+    return await response.text();
   },
 };
