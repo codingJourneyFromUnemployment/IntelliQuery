@@ -34,7 +34,9 @@ export default function SimplifiedSearchTextArea({
     }
   };
 
-  const handleKeyDown = async (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
+  const handleKeyDown = async (
+    event: React.KeyboardEvent<HTMLTextAreaElement>
+  ) => {
     if (event.key === "Enter" && !event.shiftKey) {
       event.preventDefault();
       await handleSearch();

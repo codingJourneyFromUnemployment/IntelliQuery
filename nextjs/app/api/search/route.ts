@@ -1,0 +1,57 @@
+import { Query } from "../../../types/othertypes"
+
+export const runtime = "edge";
+
+export async function POST(request: Request) {
+  const { content } = await request.json();
+
+  const id = crypto.randomUUID();
+
+  const intentCategory = "Undefined";
+
+  const query: Query = {
+    id,
+    content,
+    intentCategory,
+    createdAt: new Date()
+  };
+
+  console.log("Query:", query);
+
+  try {
+
+    // Enter QuickRAG Process
+    const response = await fetch("https://backend-worker.bkchcnbj570.workers.dev/search", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(query),
+    });
+
+    const data = await response.json();
+    const { quickReply } = data;
+    
+    return new Response(JSON.stringify({ quickReply }), {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+  } catch (error) {
+    console.error(`Error in frontend Search Route: ${error}`);
+    return new Response(
+      JSON.stringify({
+        quickReply: "An error occurred while processing your request.",
+      }),
+      {
+        status: 500,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+  }
+}
+
+

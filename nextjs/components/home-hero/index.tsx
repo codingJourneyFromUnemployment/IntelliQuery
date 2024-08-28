@@ -2,15 +2,25 @@
 
 import { useState } from "react";
 import SearchTextAreas from "./searchtextareas";
+import useStore from "../../store/store";
 
 export default function HomeHero() {
   const [isSearching, setIsSearching] = useState(false);
+  const { quickRAGResults, setQuickRAGResults } = useStore();
 
   const handleNewSearch = async (message: string) => {
-    console.log("Searching for: ", message);
-    setIsSearching(true);
     try {
-      await new Promise((resolve) => setTimeout(resolve, 5000));
+      console.log("Search content:", message);
+      setIsSearching(true);
+      const res = await fetch("/api/search", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ content: message }),
+      });
+      const { quickReply } = await res.json();
+      setQuickRAGResults(quickReply);      
       console.log("Search completed for:", message);
     } finally {
       setIsSearching(false);
@@ -24,6 +34,9 @@ export default function HomeHero() {
       </h1>
       <SearchTextAreas onSendMessage={handleNewSearch} />
       {isSearching && <p>Searching...</p>}
+      <div>
+        {quickRAGResults && <p>{quickRAGResults}</p>}
+      </div>
     </div>
   );
 }
