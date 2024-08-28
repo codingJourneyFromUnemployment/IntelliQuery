@@ -17,6 +17,24 @@ export default function HomeHero() {
   const [parsedResults, setParsedResults] = useState("");
 
   useEffect(() => {
+    const eventSource = new EventSource("http://localhost:8787/sse");
+
+    eventSource.addEventListener("quickRAGContent Push", (event) => {
+      const quickRAGContent = JSON.parse(event.data);
+      setQuickRAGResults(quickRAGContent);
+    });
+
+    eventSource.onerror = (error) => {
+      console.error("EventSource failed:", error);
+      eventSource.close();
+    }
+
+    return () => {
+      eventSource.close();
+    };
+  }, []);
+
+  useEffect(() => {
     if (quickRAGResults) {
       const parseMarkdown = async () => {
         try {
@@ -42,8 +60,8 @@ export default function HomeHero() {
         },
         body: JSON.stringify({ content: message }),
       });
-      const { quickReply } = await res.json();
-      setQuickRAGResults(quickReply);
+      // const { quickReply } = await res.json();
+      // setQuickRAGResults(quickReply);
 
       console.log("Search completed for:", message);
     } finally {

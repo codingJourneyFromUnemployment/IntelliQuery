@@ -53,7 +53,7 @@ export const quickRAGService = {
   async fullQuickRAGProcess(queryID: string, c: Context, query: Query) {
     console.log(`start fullQuickRAGProcess`);
     try {
-      const newSearchResult =  await this.updateBatchRawDataAndLinks(queryID, c);
+      const newSearchResult = await this.updateBatchRawDataAndLinks(queryID, c);
 
       const quickRAGReply = await this.fetchQuickRAG(query, newSearchResult, c);
 
@@ -61,10 +61,21 @@ export const quickRAGService = {
 
       console.log(`updated RAGProcess status to PENDING`);
 
-      const newRAGResult = await D1services.createRAGresult(queryID, quickRAGReply, c);
+      const newRAGResult = await D1services.createRAGresult(
+        queryID,
+        quickRAGReply,
+        c
+      );
 
       console.log(`created new RAGResult`);
-      // update status in RAGProcess to PENDING
+      // update  RAGProcess status and quickRAGContent
+
+      await ragProcessManager.updateQuickRAGContent(
+        c.env.currentRAGProcessId,
+        quickRAGReply,
+        c
+      );
+
       const currentStatus = RAGProcessStatus.PENDING;
 
       await ragProcessManager.updateRAGProcess(
@@ -74,7 +85,6 @@ export const quickRAGService = {
       );
 
       return newRAGResult;
-
     } catch (error) {
       console.error(`Error in quickRAGService.fullQuickRAGProcess: ${error}`);
       throw error;

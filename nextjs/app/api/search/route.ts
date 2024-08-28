@@ -21,7 +21,7 @@ export async function POST(request: Request) {
   try {
 
     // Enter QuickRAG Process
-    const response = await fetch("https://backend-worker.bkchcnbj570.workers.dev/search", {
+    const response = await fetch("http://localhost:8787/search", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
