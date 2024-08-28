@@ -1,14 +1,20 @@
-'use client';
+"use client";
 
+import { useState } from "react";
 import SearchTextAreas from "./searchtextareas";
 
 export default function HomeHero() {
-  const delay = (ms: number) =>
-    new Promise((resolve) => setTimeout(resolve, ms));
+  const [isSearching, setIsSearching] = useState(false);
 
   const handleNewSearch = async (message: string) => {
-    await delay(3000);
-    console.log(message);
+    console.log("Searching for: ", message);
+    setIsSearching(true);
+    try {
+      await new Promise((resolve) => setTimeout(resolve, 5000));
+      console.log("Search completed for:", message);
+    } finally {
+      setIsSearching(false);
+    }
   };
 
   return (
@@ -17,6 +23,7 @@ export default function HomeHero() {
         Adaptive Insights, Instant Answers!
       </h1>
       <SearchTextAreas onSendMessage={handleNewSearch} />
+      {isSearching && <p>Searching...</p>}
     </div>
   );
 }

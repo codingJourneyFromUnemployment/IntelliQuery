@@ -235,6 +235,7 @@ export const jinaService = {
 
     const headers = {
       Authorization: `Bearer ${c.env.JINA_API_KEY}`,
+      "X-Return-Format": "markdown",
       "X-Timeout": "5",
       "X-With-Images-Summary": "true",
       "X-With-Generated-Alt": "true",
