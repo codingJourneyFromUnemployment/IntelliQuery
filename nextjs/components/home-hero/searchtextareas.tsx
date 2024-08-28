@@ -3,16 +3,23 @@
 import { useState } from "react";
 import TextareaAutosize from "react-textarea-autosize";
 import SearchButton from "./searchbutton";
+import useStore from "@/store/store";
 
 export default function SimplifiedSearchTextArea() {
-  const [comment, setComment] = useState("");
+  const [message, setMessage] = useState("");
+  const {
+    currentQueryId,
+    currentRAGProcessStatus,
+    isLoading,
+    setCurrentQueryId,
+    setCurrentRAGProcessStatus,
+    setIsLoading,
+  } = useStore();
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    // Here you would typically handle the submission of the comment
-    console.log("Submitted comment:", comment);
-    setComment(""); // Clear the input after submission
-  };
+
+  const handleKeyDown = (e) => {
+    return
+  }
 
   return (
     <div className="w-5/6 md:w-full max-w-2xl xl:max-w-5xl mx-auto">
