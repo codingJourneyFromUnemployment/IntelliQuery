@@ -1,12 +1,35 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import SearchTextAreas from "./searchtextareas";
 import useStore from "../../store/store";
+import { marked } from "marked";
+import Image from "next/image";
+import QuickRAGCard from "./quickRAGCard";
+
+const createMarkup = (html: string) => {
+  return { __html: html };
+};
 
 export default function HomeHero() {
   const [isSearching, setIsSearching] = useState(false);
   const { quickRAGResults, setQuickRAGResults } = useStore();
+  const [parsedResults, setParsedResults] = useState("");
+
+  useEffect(() => {
+    if (quickRAGResults) {
+      const parseMarkdown = async () => {
+        try {
+          const parsed = await marked(quickRAGResults);
+          setParsedResults(parsed);
+        } catch (error) {
+          console.error("Error parsing markdown:", error);
+          setParsedResults("Error parsing content");
+        }
+      };
+      parseMarkdown();
+    }
+  }, [quickRAGResults]);
 
   const handleNewSearch = async (message: string) => {
     try {
@@ -20,7 +43,8 @@ export default function HomeHero() {
         body: JSON.stringify({ content: message }),
       });
       const { quickReply } = await res.json();
-      setQuickRAGResults(quickReply);      
+      setQuickRAGResults(quickReply);
+
       console.log("Search completed for:", message);
     } finally {
       setIsSearching(false);
@@ -33,10 +57,24 @@ export default function HomeHero() {
         Adaptive Insights, Instant Answers!
       </h1>
       <SearchTextAreas onSendMessage={handleNewSearch} />
-      {isSearching && <p>Searching...</p>}
-      <div>
-        {quickRAGResults && <p>{quickRAGResults}</p>}
-      </div>
+      {isSearching && (
+        <div className="flex items-center justify-center space-x-4">
+          <p className="text-gradient-primary text-base">Searching...</p>
+          <Image
+            src="/loading.svg"
+            alt="Loading"
+            width={24}
+            height={24}
+            className="animate-spin text-gradient-primary"
+          />
+        </div>
+      )}
+      {parsedResults && (
+        <QuickRAGCard
+          parsedResults={parsedResults}
+          createMarkup={createMarkup}
+        />
+      )}
     </div>
   );
 }
