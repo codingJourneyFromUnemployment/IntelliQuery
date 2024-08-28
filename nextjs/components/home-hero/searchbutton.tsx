@@ -1,10 +1,23 @@
+import { useState } from "react";
 
+interface SearchButtonProps {
+  searchButtonDisable: boolean;
+  onClickSearch: () => void;
+  setSearchButtonDisable: (value: boolean) => void;
+}
 
-export default function SearchButton() {
+export default function SearchButton({
+  onClickSearch,
+  searchButtonDisable,
+  setSearchButtonDisable,
+}: SearchButtonProps) {
   return (
     <div className="flex justify-center items-center absolute right-2 bottom-2">
       <button
+        title="Search"
         type="submit"
+        onClick={onClickSearch}
+        disabled={searchButtonDisable}
         className="inline-flex items-center rounded-md bg-gradient-primary-light px-2 py-2 shadow-sm hover:bg-gradient-primary-medium focus-visible:outline active:bg-gradient-primary-active"
       >
         <svg
