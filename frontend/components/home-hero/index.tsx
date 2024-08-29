@@ -42,8 +42,17 @@ export default function HomeHero() {
 
   const sseRegister = (eventSource: EventSource) => {
     eventSource.addEventListener("quickRAGContent Push", (event) => {
-      const quickRAGContent = JSON.parse(event.data);
-      setQuickRAGResults(quickRAGContent);
+      console.log("Received data:", event.data);
+      const quickRAGContent = event.data;
+      
+      if (quickRAGContent === "COMPLETED") {
+        console.log("End of stream received, closing EventSource");
+        eventSource.close();
+        eventSourceRef.current = null;
+      } else {
+        setQuickRAGResults(quickRAGContent);
+      }
+
     });
 
     eventSource.onerror = (error) => {
@@ -54,7 +63,11 @@ export default function HomeHero() {
 
   const handleNewSearch = async (message: string) => {
     try {
+      // initiate page
       console.log("Search content:", message);
+      setIsSearching(true);
+      setQuickRAGResults("");
+      setParsedResults("");
 
       // Close any existing EventSource
       if (eventSourceRef.current) {
@@ -72,24 +85,22 @@ export default function HomeHero() {
       const data = await res.json();
       const { ragProcessID } = data;
 
-      console.log(`start registering SSE for quickRAGContent Push with ID: ${ragProcessID}`);
+      console.log(
+        `start registering SSE for quickRAGContent Push with ID: ${ragProcessID}`
+      );
 
       // Create a new EventSource
-      const eventSource = new EventSource(`http://localhost:8787/sse/${ragProcessID}`);
-      
+      const eventSource = new EventSource(
+        `http://localhost:8787/sse/${ragProcessID}`
+      );
+
       eventSourceRef.current = eventSource;
 
       sseRegister(eventSource);
-      setIsSearching(true);
 
       console.log("SSE registered for quickRAGContent Push");
     } finally {
       setIsSearching(false);
-      // Close the EventSource after the search is complete
-      if (eventSourceRef.current) {
-        eventSourceRef.current.close();
-        eventSourceRef.current = null;
-      }
     }
   };
 

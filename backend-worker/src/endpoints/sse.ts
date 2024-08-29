@@ -10,6 +10,8 @@ const sseEndpoint = async (c: Context) => {
     return c.json({ error: "No RAG process ID provided" }, 400);
   }
 
+  console.log("SSE endpoint for RAG Process ID:", ragProcessIDRequire);
+
   return streamSSE(c, async (stream) => {
 
     while(true) {
@@ -29,9 +31,12 @@ const sseEndpoint = async (c: Context) => {
           data: quickRAGContent,
           event: "quickRAGContent Push",
         });
-      }
 
-      if (currentRAGProcess.status === RAGProcessStatus.COMPLETED) {
+        await stream.writeSSE({
+          data: "COMPLETED",
+          event: "quickRAGContent Push",
+        });
+
         break;
       }
 
