@@ -23,10 +23,14 @@ const searchMainEndpoint = async (c: Context) => {
     // enter the deepRAGService
 
     const newDeepRAGProfile = await deepRAGService.fetchDeepRAGFromJina(queryID, c);
+
+    // return RAGProceesID for SSE endpoint
+
+    const ragProcessID = c.env.currentRAGProcessId;
     
     return c.json({ 
       statuscode : 200,
-      quickReply : quickRAGReply,
+      ragProcessID : ragProcessID,
     });
 
   } catch (error) {

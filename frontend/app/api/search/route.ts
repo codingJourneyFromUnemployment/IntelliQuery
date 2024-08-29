@@ -30,9 +30,9 @@ export async function POST(request: Request) {
     });
 
     const data = await response.json();
-    const { quickReply } = data;
+    const { ragProcessID } = data;
     
-    return new Response(JSON.stringify({ quickReply }), {
+    return new Response(JSON.stringify({ ragProcessID }), {
       headers: {
         "Content-Type": "application/json",
       },

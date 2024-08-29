@@ -1,6 +1,5 @@
 "use client";
-
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import SearchTextAreas from "./searchtextareas";
 import useStore from "../../store/store";
 import { marked } from "marked";
@@ -15,22 +14,14 @@ export default function HomeHero() {
   const [isSearching, setIsSearching] = useState(false);
   const { quickRAGResults, setQuickRAGResults } = useStore();
   const [parsedResults, setParsedResults] = useState("");
+  const eventSourceRef = useRef<EventSource | null>(null);
 
   useEffect(() => {
-    const eventSource = new EventSource("http://localhost:8787/sse");
-
-    eventSource.addEventListener("quickRAGContent Push", (event) => {
-      const quickRAGContent = JSON.parse(event.data);
-      setQuickRAGResults(quickRAGContent);
-    });
-
-    eventSource.onerror = (error) => {
-      console.error("EventSource failed:", error);
-      eventSource.close();
-    }
-
     return () => {
-      eventSource.close();
+      // Cleanup function to close the EventSource when component unmounts
+      if (eventSourceRef.current) {
+        eventSourceRef.current.close();
+      }
     };
   }, []);
 
@@ -49,10 +40,27 @@ export default function HomeHero() {
     }
   }, [quickRAGResults]);
 
+  const sseRegister = (eventSource: EventSource) => {
+    eventSource.addEventListener("quickRAGContent Push", (event) => {
+      const quickRAGContent = JSON.parse(event.data);
+      setQuickRAGResults(quickRAGContent);
+    });
+
+    eventSource.onerror = (error) => {
+      console.error("EventSource failed:", error);
+      eventSource.close();
+    };
+  };
+
   const handleNewSearch = async (message: string) => {
     try {
       console.log("Search content:", message);
-      setIsSearching(true);
+
+      // Close any existing EventSource
+      if (eventSourceRef.current) {
+        eventSourceRef.current.close();
+      }
+
       const res = await fetch("/api/search", {
         method: "POST",
         headers: {
@@ -60,12 +68,28 @@ export default function HomeHero() {
         },
         body: JSON.stringify({ content: message }),
       });
-      // const { quickReply } = await res.json();
-      // setQuickRAGResults(quickReply);
 
-      console.log("Search completed for:", message);
+      const data = await res.json();
+      const { ragProcessID } = data;
+
+      console.log(`start registering SSE for quickRAGContent Push with ID: ${ragProcessID}`);
+
+      // Create a new EventSource
+      const eventSource = new EventSource(`http://localhost:8787/sse/${ragProcessID}`);
+      
+      eventSourceRef.current = eventSource;
+
+      sseRegister(eventSource);
+      setIsSearching(true);
+
+      console.log("SSE registered for quickRAGContent Push");
     } finally {
       setIsSearching(false);
+      // Close the EventSource after the search is complete
+      if (eventSourceRef.current) {
+        eventSourceRef.current.close();
+        eventSourceRef.current = null;
+      }
     }
   };
 

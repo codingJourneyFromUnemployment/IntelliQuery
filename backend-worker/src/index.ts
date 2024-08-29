@@ -15,7 +15,7 @@ app.use('/search', D1middleware);
 
 
 app.get("/", (c) => c.text("Hello IntelliQuery!"))
-app.get("/sse", sseEndpoint)
+app.get("/sse/:ragProcessID", sseEndpoint);
 app.post("/search",
 	zValidator("json", querySchema),
 	searchMainEndpoint)
