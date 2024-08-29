@@ -41,12 +41,73 @@ export const deepRAGService = {
       deepRAGProfileString,
       c
     );
-    
 
     console.log(
       `\ncreated DeepRAGProfile and updated RAGProcess with raw content`
     );
 
     return currentRAGProcess;
+  },
+
+  async fetchDeepRAGFromOpenRouter(
+    query: Query,
+    rAGProcess: RAGProcess,
+    searchResult: SearchResult,
+    c: Context
+  ): Promise<DeepRAGProfile> {
+    console.log(`\nfetchDeepRAGFromOpenRouter`);
+    const deepRAGContext = contextManager.getDeepRAGContext(
+      query,
+      rAGProcess,
+      searchResult,
+      c
+    );
+    const deepRAGResults = await openrouterService(deepRAGContext, c.env);
+    const deepRAGReply = deepRAGResults.reply;
+    const deepRAGProfileString = JSON.stringify(deepRAGReply);
+
+    // update DeepRAGProfile in DB
+    const currentDeepRAGProfile = await D1services.createDeepRAGProfile(
+      query.id,
+      deepRAGProfileString,
+      c
+    );
+
+    return currentDeepRAGProfile;
+  },
+
+  async processDeepRAG(queryID: string, query: Query, c: Context) {
+    try {
+      const currentRAGProcess = await deepRAGService.fetchDeepRAGFromJina(
+        queryID,
+        c
+      );
+      const currentSearchResult = await D1services.fetchSearchResultByQueryId(
+        queryID,
+        c
+      );
+      const deepRAGProfile = await deepRAGService.fetchDeepRAGFromOpenRouter(
+        query,
+        currentRAGProcess,
+        currentSearchResult,
+        c
+      );
+
+      // update RAG process status to COMPLETED
+      await ragProcessManager.updateRAGProcess(
+        c.env.currentRAGProcessId,
+        RAGProcessStatus.COMPLETED,
+        c
+      );
+
+    } catch (error) {
+      console.error(`Error in processDeepRAG: ${error}`);
+      // update RAG process status to FAILED
+      await ragProcessManager.updateRAGProcess(
+        c.env.currentRAGProcessId,
+        RAGProcessStatus.FAILED,
+        c
+      );
+    }
   },
 };

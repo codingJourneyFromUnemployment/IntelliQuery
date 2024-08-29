@@ -179,7 +179,6 @@ export const D1services = {
         data: {
           queryId: queryID,
           content: content,
-          reflection: null,
           createdAt: new Date(),
         },
       });

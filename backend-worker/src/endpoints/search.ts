@@ -4,6 +4,7 @@ import { Bindings } from "../../types/workertypes";
 import { IntentRecognitionService } from "../../services/intentRecognitionService";
 import { quickRAGService } from "../../services/quickRAGService";
 import { deepRAGService } from "../../services/deepRAGService";
+import { D1services } from "../../services/D1services";
 
 const searchMainEndpoint = async (c: Context) => {
   try {
@@ -22,21 +23,19 @@ const searchMainEndpoint = async (c: Context) => {
         c,
         query
       );
-
     } else if (intentCategory === "2") {
-      // enter the quickRAGService
+      // enter the fullquickRAGService
       const newRAGResult = await quickRAGService.fullQuickRAGProcess(
         queryID,
         c,
         query
       );
 
-      // enter the deepRAGService
+      // enter the deepRAGService (Promise)
 
-      const newDeepRAGProfile = await deepRAGService.fetchDeepRAGFromJina(
-        queryID,
-        c
-      );
+      console.log(`\nentering deepRAGService (Promise)`);
+      deepRAGService.processDeepRAG(queryID, query, c).catch(error => {
+        console.error(`Error in async processDeepRAG: ${error}`);});
     }
 
     // return RAGProceesID for SSE endpoint

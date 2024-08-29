@@ -44,7 +44,7 @@ export type DeepRAGProfile = {
   id: string;
   queryId: string;
   content: string;
-  reflection: string | null;
+  reflection?: string | null;
   createdAt: Date;
   updatedAt: Date;
 };

@@ -1,5 +1,5 @@
 import { Context } from "hono";
-import { Query, SearchResult } from "../types/workertypes";
+import { Query, RAGProcess, SearchResult } from "../types/workertypes";
 
 const IntentRecognition_Prompt: string = `
 # Your Role: 你是一个搜索意图识别专家，专注于识别用户自然语言背后的真实搜索意图和搜索需求，并精心完成以下几步工作：
@@ -87,12 +87,21 @@ const DeepRAG_Prompt: string = `
 
 2. 不要在最终答案中陈述你的推理过程,例如你不要陈述用户的自然语言输入是什么,用户可能的意图是什么,因此整合输出了哪些内容.也不要告诉用户你做了哪些工作,不要按照job A、job B、job C这样的顺序和结构来组织答案.也就是说,你要按照所搜集到的素材的内容来合理的组织答案的形式和结构.默认参照维基百科的内容和形式来组织内容.\n
 
-3. 为呈现出内容的多层次、多维度和真实性,必须使用markdown的格式输出,并像论文一样在最后列出参考信息来源列表(含链接).添加markdown格式标记时,注意保持内容排版整体的美观,例如可以在每次换行时增加一个空行,以便前端网页解析渲染.你所生成的答案需要在前端渲染一整个Deep RAG的页面,因此必须内容详实,字数要在1500-3000字.为此你可能需要提取大量的素材.\n
+3. 为呈现出内容的多层次、多维度和真实性,必须使用markdown的格式输出,并像论文一样在最后列出参考信息来源列表(含链接).添加markdown格式标记时,注意保持内容排版整体的美观,例如可以在每次换行时增加一个空行,以便前端网页解析渲染.你所生成的答案需要在前端渲染一个完整的Deep RAG页面,因此必须内容详实,字数要在3000字以上.为此你可能需要提取大量的素材.\n
 
-4. 你最终生成答案的语种需要和下一点中用户输入的初始自然语言搜索需求的语种相一致.\n
+4. 从详情页的抓取内容中提取一些具有代表性的图片链接,并插入到以markdown格式输出的答案中,以便在前端解析之后生成带有丰富图片的长文页面.\n 
+
+5. 你最终生成答案的语种需要和下一点中用户输入的初始自然语言搜索需求的语种相一致.\n
 
 ## 用户输入的初始自然语言搜索需求如下：\n
 `;
+
+const DeepRAG_Sepatator1: string = "\n## google api返回的4个问题的原始数据如下:\n";
+
+const DeepRAG_Sepatator2: string = "\n## 额外抓取的4个详情页的原始数据如下:\n";
+
+const DeepRAG_Footer: string =
+  "\n## 请根据上述文档内容生成Deep RAG后的markdown格式带图片长文.记住,最终生成的长文需要全面、翔实、细节丰富,并使用描述性的语言.\n";
 
 class ContextManager {
   private readonly maxTokens: number = 100000;
@@ -127,6 +136,17 @@ class ContextManager {
     const quickRAGDirectLLMAnswerContext = QuickRAGDirectLLMAnswer_Prompt + userInitialQuery + QuickRAGDirectLLMAnswer_Footer;
 
     return quickRAGDirectLLMAnswerContext;
+  }
+
+  getDeepRAGContext(query: Query, rAGProcess: RAGProcess,searchResult:SearchResult,  c: Context): string { 
+    const userInitialQuery = query.content;
+    const pageDetailContent = rAGProcess.fullRAGRawContent;
+    const searchResultContent = searchResult.serperBatchRawData;
+    
+    const deepRAGContext = DeepRAG_Prompt + userInitialQuery + DeepRAG_Sepatator1 + searchResultContent + DeepRAG_Sepatator2 + pageDetailContent + DeepRAG_Footer;
+
+    return deepRAGContext;
+
   }
 
 }
