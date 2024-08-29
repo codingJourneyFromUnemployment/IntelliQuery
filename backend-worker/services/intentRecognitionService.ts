@@ -65,7 +65,7 @@ export const IntentRecognitionService = {
       );
 
 
-      return intentRecognitionJson;
+      return intentCategory;
       
     } catch (error) {
       console.error(`Error in intentRecognitionService: ${error}`);

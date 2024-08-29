@@ -32,8 +32,23 @@ export const quickRAGService = {
     const newSearchResult = await D1services.createSearchResult(queryID, newRawData, searchLinks, c);
 
     return newSearchResult;
+  },
 
-    console.log(`updated serperBatchRawDataAndLinks`);
+  async createLLMDirectAnswer(queryID: string, c: Context) : Promise<SearchResult> {
+    // update RAG process status to QUICK_RAG
+    const currentStatus = RAGProcessStatus.QUICK_RAG;
+
+    await ragProcessManager.updateRAGProcess(
+      c.env.currentRAGProcessId,
+      currentStatus,
+      c
+    );
+
+    console.log(`updated RAGProcess status to ${currentStatus}`);
+    console.log(`creating LLMDirectAnswer`);
+
+    const newSearchResult = await D1services.createSearchResult(queryID, "", "", c);
+    return newSearchResult;
   },
 
   async fetchQuickRAG(
@@ -48,6 +63,62 @@ export const quickRAGService = {
     );
     const quickRAGReply = await openrouterService(quickRAGContext, c.env);
     return quickRAGReply.reply;
+  },
+
+  async fetchQuickDirectLLMAnswer(
+    query: Query,
+    c: Context
+  ){
+    const quickRAGDirectLLMAnswerContext = contextManager.getQuickRAGDirectLLMAnswerContext(
+      query,
+      c
+    );
+
+    const quickRAGReply = await openrouterService(quickRAGDirectLLMAnswerContext, c.env);
+    return quickRAGReply.reply;
+
+  },
+
+  async quickRAGProcess(queryID: string, c: Context, query: Query) {
+    console.log(`start LLMDirectAnswerProcess`);
+    try {
+      const newSearchResult = await this.createLLMDirectAnswer(queryID, c);
+      const quickRAGReply = await this.fetchQuickDirectLLMAnswer(query, c);
+
+      console.log(`quickRAGReply: ${quickRAGReply}`);
+
+      console.log(`updated RAGProcess status to PENDING`);
+
+      const newRAGResult = await D1services.createRAGresult(
+        queryID,
+        quickRAGReply,
+        c
+      );
+
+      console.log(`created new RAGResult`);
+
+      // update  RAGProcess status and quickRAGContent for SSE endpoint
+
+      await ragProcessManager.updateQuickRAGContent(
+        c.env.currentRAGProcessId,
+        quickRAGReply,
+        c
+      );
+
+      const currentStatus = RAGProcessStatus.PENDING;
+
+      await ragProcessManager.updateRAGProcess(
+        c.env.currentRAGProcessId,
+        currentStatus,
+        c
+      );
+
+      return newRAGResult;
+    } catch (error) {
+      console.error(`Error in quickRAGService.fullQuickRAGProcess: ${error}`);
+      throw error;
+    }
+
   },
 
   async fullQuickRAGProcess(queryID: string, c: Context, query: Query) {
@@ -68,7 +139,7 @@ export const quickRAGService = {
       );
 
       console.log(`created new RAGResult`);
-      // update  RAGProcess status and quickRAGContent
+      // update  RAGProcess status and quickRAGContent for SSE endpoint
 
       await ragProcessManager.updateQuickRAGContent(
         c.env.currentRAGProcessId,

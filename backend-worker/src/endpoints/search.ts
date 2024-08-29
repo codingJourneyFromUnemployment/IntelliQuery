@@ -12,25 +12,40 @@ const searchMainEndpoint = async (c: Context) => {
 
     // enter the intent recognition status
 
-    const intentRecognitionResult =
+    const intentCategory =
       await IntentRecognitionService.intentRecognitionService(query, c);
 
-    // enter the quickRAGService
-    const newRAGResult = await quickRAGService.fullQuickRAGProcess(queryID, c, query);
+    if (intentCategory === "1") {
+      // enter the quickRAGService
+      const newRAGResult = await quickRAGService.quickRAGProcess(
+        queryID,
+        c,
+        query
+      );
 
-    const quickRAGReply = newRAGResult.content;
+    } else if (intentCategory === "2") {
+      // enter the quickRAGService
+      const newRAGResult = await quickRAGService.fullQuickRAGProcess(
+        queryID,
+        c,
+        query
+      );
 
-    // enter the deepRAGService
+      // enter the deepRAGService
 
-    const newDeepRAGProfile = await deepRAGService.fetchDeepRAGFromJina(queryID, c);
+      const newDeepRAGProfile = await deepRAGService.fetchDeepRAGFromJina(
+        queryID,
+        c
+      );
+    }
 
     // return RAGProceesID for SSE endpoint
 
     const ragProcessID = c.env.currentRAGProcessId;
-    
-    return c.json({ 
-      statuscode : 200,
-      ragProcessID : ragProcessID,
+
+    return c.json({
+      statuscode: 200,
+      ragProcessID: ragProcessID,
     });
 
   } catch (error) {

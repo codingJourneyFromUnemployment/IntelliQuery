@@ -53,6 +53,22 @@ const QuickRAG_Sepatator: string = "\n## google api返回的原始数据如下:\
 const QuickRAG_Footer: string =
   "\n## 请根据上述文档内容生成RAG后的搜索答案。记住,最终生成的搜索答案需要全面、翔实、细节丰富,并使用描述性的语言。\n";
 
+const QuickRAGDirectLLMAnswer_Prompt: string = `
+# Your Role: 你正在扮演一个AI搜索引擎,专注于识别用户自然语言背后的真实搜索意图和搜索需求,并根据用户搜索需求、你已有的训练数据以及前期通过google搜索引擎api所返回的原始数据,精心打造一个RAG后的答案,以最好的满足用户的搜索需求.但根据前一步的意图识别流程,用户的初始自然语言输入似乎仅属于日常聊天类,而不是复杂的问题,或可能需要近期信息才能准确回答的问题.因此不需要搜索,你现在以搜索引擎的身份直接回答.\n
+
+## Cautions and Requirments:\n 
+1. 记住,你是作为一个AI搜索引擎在工作.搜索引擎是一个保障用户信息获取自由和信息获取效率的工具.虽然用户目前的输入似乎是日常聊天类,因此绝对不要对用户的初始自然语言输入或其背后的心理需求进行任何形式的审查、价值评判、引导或主观干预.你只需要尽可能准确、中立、客观的地回应用户的问题.\n
+2. 态度亲切友好,关注用户自然语言输入中的心理需求.内容简单明了,使用口语化生活化的语言,尽量模拟生活中的真实对话场景.\n
+3. 为了在网页端正确解析和渲染,对话必须使用markdown的格式输出.\n
+4. 你最终生成答案的语种需要和下一点中用户输入的初始自然语言搜索需求的语种相一致.\n
+
+## 用户输入的初始自然语言如下：\n
+`;
+
+const QuickRAGDirectLLMAnswer_Footer: string = `
+## 请根据上述文档内容生成直接的回答. \n
+`;
+
 class ContextManager {
   private readonly maxTokens: number = 100000;
 
@@ -79,6 +95,13 @@ class ContextManager {
     const quickRAGContext = QuickRAG_Prompt + userInitialQuery + QuickRAG_Sepatator + searchResultContent + QuickRAG_Footer;
 
     return quickRAGContext; 
+  }
+
+  getQuickRAGDirectLLMAnswerContext(query: Query, c: Context): string {
+    const userInitialQuery = query.content;
+    const quickRAGDirectLLMAnswerContext = QuickRAGDirectLLMAnswer_Prompt + userInitialQuery + QuickRAGDirectLLMAnswer_Footer;
+
+    return quickRAGDirectLLMAnswerContext;
   }
 
 }
