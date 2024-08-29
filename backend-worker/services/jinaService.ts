@@ -166,11 +166,11 @@ export const jinaService = {
       return [];
     }
 
-    const top3Links = links.slice(0, 3);
+    const top4Links = links.slice(0, 4);
     const results: string[] = [];
     const failedUrls: string[] = [];
 
-    const promises = top3Links.map((link) =>
+    const promises = top4Links.map((link) =>
       this.fetchJinaResultsWithRetry(link, c)
     );
     const settledResults = await Promise.allSettled(promises);
@@ -179,8 +179,8 @@ export const jinaService = {
       if (result.status === "fulfilled") {
         results.push(result.value);
       } else {
-        failedUrls.push(top3Links[index]);
-        console.error(`Failed to fetch ${top3Links[index]}:`, result.reason);
+        failedUrls.push(top4Links[index]);
+        console.error(`Failed to fetch ${top4Links[index]}:`, result.reason);
       }
     });
 
@@ -228,10 +228,12 @@ export const jinaService = {
   },
 
   async fetchJinaResults(targetUrl: string, c: Context): Promise<string> {
-    console.log(`Fetching Jina results from ${targetUrl}`);
+
 
     const baseUrl = "https://r.jina.ai/";
-    const fullUrl = new URL(targetUrl, baseUrl).toString();
+    const fullUrl = new URL(`${baseUrl}${targetUrl}`).toString();
+
+    console.log(`Fetching Jina results from ${fullUrl}`);
 
     const headers = {
       Authorization: `Bearer ${c.env.JINA_API_KEY}`,
