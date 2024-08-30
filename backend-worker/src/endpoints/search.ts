@@ -33,9 +33,14 @@ const searchMainEndpoint = async (c: Context) => {
 
       // enter the deepRAGService (Promise)
 
-      console.log(`\nentering deepRAGService (Promise)`);
-      deepRAGService.processDeepRAG(queryID, query, c).catch(error => {
-        console.error(`Error in async processDeepRAG: ${error}`);});
+      // await deepRAGService.processDeepRAG(queryID, query, c);
+      
+    } else {
+      console.log("Error in intent recognition");
+      return c.json(
+        { error: "Error in searchMainEndpoint.intentrecognition" },
+        500
+      );
     }
 
     // return RAGProceesID for SSE endpoint
