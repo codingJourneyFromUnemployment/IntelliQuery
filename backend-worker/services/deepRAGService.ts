@@ -92,6 +92,15 @@ export const deepRAGService = {
         currentSearchResult,
         c
       );
+      // update DeepRAGProfile in statusManager
+      const profileResult = await D1services.fetchDeepRAGProfileByQueryId(queryID, c);
+      const content = profileResult.content;
+
+      await ragProcessManager.updateDeepRAGProfile(
+        c.env.currentRAGProcessId,
+        content,
+        c
+      );
 
       // update RAG process status to COMPLETED
       await ragProcessManager.updateRAGProcess(

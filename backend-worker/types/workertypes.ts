@@ -59,10 +59,12 @@ export type RAGProcess = {
     | "completed"
     | "failed"
     | "quick RAG"
+    | "quickRAG sent"
     | "full RAG"
     | "intent recognition";
   quickRAGContent?: string;
   fullRAGRawContent?: string;
+  deepRAGProfile?: string;
   createdAt: Date;
   updatedAt: Date;
 };
@@ -72,7 +74,8 @@ export type RAGProcess = {
 export interface Bindings {
   // cloudflare bindings
   DB: D1Database;
-  KV: KVNamespace;
+  RAGProcess: KVNamespace;
+  DEEPRAGPROCESSDO : DurableObjectNamespace;
 
   // Environment variables
   OPENROUTER_MODEL: string;

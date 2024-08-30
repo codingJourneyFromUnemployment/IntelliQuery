@@ -31,16 +31,12 @@ const searchMainEndpoint = async (c: Context) => {
         query
       );
 
-      // enter the deepRAGService (in Durable Objects)
-      const id = c.env.DEEPRAGPROCESSDO.idFromName(queryID);
-      const deepRAGObj = await c.env.DEEPRAGPROCESSDO.get(id);
+      // enter the deepRAGService and wait until the process is done
 
-      deepRAGObj.fetch(
-        new Request("/deeprag", {
-          method: "POST",
-          body: JSON.stringify({ queryID, query }),
-        })
-      );
+      c.executionCtx.waitUntil(
+        deepRAGService.processDeepRAG(queryID, query, c)
+      )
+      
       
     } else {
       console.log("Error in intent recognition");

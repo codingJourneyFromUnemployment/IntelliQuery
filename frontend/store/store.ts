@@ -6,6 +6,7 @@ const useStore = create<Store & KeyActions>((set, get) => ({
   currentQueryId: "",
   intentCategory: "",
   quickRAGResults: "",
+  deepRAGResults: "",
   fullRAGRawContent: "",
   currentRAGProcessStatus: "pending",
   isLoading: false,
@@ -15,6 +16,7 @@ const useStore = create<Store & KeyActions>((set, get) => ({
   setCurrentQueryId: (currentQueryId) => set({ currentQueryId }),
   setIntentCategory: (intentCategory) => set({ intentCategory }),
   setQuickRAGResults: (quickRAGResults) => set({ quickRAGResults }),
+  setDeepRAGResults: (deepRAGResults) => set({ deepRAGResults }),
   setFullRAGRawContent: (fullRAGRawContent) => set({ fullRAGRawContent }),
   setCurrentRAGProcessStatus: (currentRAGProcessStatus) =>
     set({ currentRAGProcessStatus }),

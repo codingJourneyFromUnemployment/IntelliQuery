@@ -6,12 +6,14 @@ import { Bindings } from "../types/workertypes";
 export class DeepRAGDurableObject {
   state: DurableObjectState;
   app: Hono<{ Bindings: Bindings }>;
+  env: Bindings;
 
-  constructor(state: DurableObjectState) {
+  constructor(state: DurableObjectState, env: Bindings) {
     this.state = state;
+    this.env = env;
     this.app = new Hono<{ Bindings: Bindings }>();
 
-    this.app.post("/deeprag", async (c: Context) => {
+    this.app.post("/deeprag", async (c, env) => {
       try {
         const {queryId, query } = await c.req.json();
 

@@ -195,6 +195,22 @@ export const D1services = {
       console.error(`Error in D1services.createDeepRAGProfile: ${error}`);
       throw error;
     }
+  },
+
+  async fetchDeepRAGProfileByQueryId(queryID: string, c: Context) {
+    const prisma = c.get("prisma");
+
+    try {
+      console.log(`fecth DeepRAGprofile via queryID: ${queryID}`);
+
+      const deepRAGProfile = await prisma.deepRAGProfile.findFirst({
+        where: { queryId: queryID },
+      });
+
+      return deepRAGProfile;
+    } catch (error) {
+      console.error(`Error in D1services.fetchDeepRAGProfileByQueryId: ${error}`);
+    }
   }
 };
 

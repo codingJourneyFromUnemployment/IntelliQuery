@@ -4,6 +4,7 @@ export interface Store {
   intentCategory: string;
   quickRAGResults: string;
   fullRAGRawContent: string;
+  deepRAGResults: string;
   currentRAGProcessStatus:
     | "pending"
     | "completed"
@@ -19,6 +20,7 @@ export interface KeyActions {
   setCurrentQueryId: (currentQueryId: Store["currentQueryId"]) => void;
   setIntentCategory: (intentCategory: Store["intentCategory"]) => void;
   setQuickRAGResults: (quickRAGResults: Store["quickRAGResults"]) => void;
+  setDeepRAGResults: (deepRAGResults: Store["deepRAGResults"]) => void;
   setFullRAGRawContent: (fullRAGRawContent: Store["fullRAGRawContent"]) => void;
   setCurrentRAGProcessStatus: (
     currentRAGProcessStatus: Store["currentRAGProcessStatus"]
