@@ -51,15 +51,15 @@ database_id = "2a8dda7d-3c77-4ac2-8d8d-12150d4adedd"
 # Bind a Durable Object. Durable objects are a scale-to-zero compute primitive based on the actor model.
 # Durable Objects can live for as long as needed. Use these when you need a long-running "server", such as in realtime apps.
 # Docs: https://developers.cloudflare.com/workers/wrangler/configuration/#durable-objects
-# [[durable_objects.bindings]]
-# name = "MY_DURABLE_OBJECT"
-# class_name = "MyDurableObject"
+[[durable_objects.bindings]]
+name = "DEEPRAGPROCESSDO"
+class_name = "DeepRAGDurableObject"   
 
 # Durable Object migrations.
 # Docs: https://developers.cloudflare.com/workers/wrangler/configuration/#migrations
-# [[migrations]]
-# tag = "v1"
-# new_classes = ["MyDurableObject"]
+[[migrations]]
+tag = "v1"
+new_classes = ["DeepRAGDurableObject"]
 
 # Bind a Hyperdrive configuration. Use to accelerate access to your existing databases from Cloudflare Workers.
 # Docs: https://developers.cloudflare.com/workers/wrangler/configuration/#hyperdrive

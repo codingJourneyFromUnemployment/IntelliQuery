@@ -31,9 +31,16 @@ const searchMainEndpoint = async (c: Context) => {
         query
       );
 
-      // enter the deepRAGService (Promise)
+      // enter the deepRAGService (in Durable Objects)
+      const id = c.env.DEEPRAGPROCESSDO.idFromName(queryID);
+      const deepRAGObj = await c.env.DEEPRAGPROCESSDO.get(id);
 
-      // await deepRAGService.processDeepRAG(queryID, query, c);
+      deepRAGObj.fetch(
+        new Request("/deeprag", {
+          method: "POST",
+          body: JSON.stringify({ queryID, query }),
+        })
+      );
       
     } else {
       console.log("Error in intent recognition");
@@ -51,7 +58,6 @@ const searchMainEndpoint = async (c: Context) => {
       statuscode: 200,
       ragProcessID: ragProcessID,
     });
-
   } catch (error) {
     console.error(`Error in searchMainEndpoint: ${error}`);
     return c.json({ error: "Error in searchMainEndpoint" }, 500);
@@ -59,4 +65,3 @@ const searchMainEndpoint = async (c: Context) => {
 };
 
 export default searchMainEndpoint;
-
