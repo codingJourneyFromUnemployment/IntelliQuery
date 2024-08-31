@@ -14,8 +14,8 @@ export default function Home() {
     <div className="h-screen w-full flex flex-col items-center">
       <HomeHeader />
       <HomeHero />
-      <HomeInsights />
       <HomeFooter />
+      <HomeInsights />
     </div>
   );
 }

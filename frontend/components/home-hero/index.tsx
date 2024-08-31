@@ -18,6 +18,8 @@ export default function HomeHero() {
     setDeepRAGResults,
     isSearching,
     setIsSearching,
+    intentCategory,
+    setIntentCategory,
   } = useStore();
   const [parsedQuickResults, setParsedQuickResults] = useState("");
   const eventSourceRef = useRef<EventSource | null>(null);
@@ -104,8 +106,9 @@ export default function HomeHero() {
       });
 
       const data = await res.json();
-      const { ragProcessID } = data;
+      const { ragProcessID, intentCategory } = data;
 
+      setIntentCategory(intentCategory);
       console.log(
         `start registering SSE for quickRAGContent Push with ID: ${ragProcessID}`
       );

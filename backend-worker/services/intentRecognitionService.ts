@@ -25,9 +25,11 @@ export const IntentRecognitionService = {
       // use openrouterService to implement intent recognition
       console.log("Calling openrouterService");
 
+      const currentModel = c.env.OPENROUTER_MODEL_CHN;
+
       const intentRecognitionContext =
         await contextManager.getIntentRecognitionContext(query, c);
-      const reply = await openrouterService(intentRecognitionContext, c.env);
+      const reply = await openrouterService(intentRecognitionContext, c.env, currentModel);
       let intentRecognitionJsonString = reply.reply;
 
       intentRecognitionJsonString = intentRecognitionJsonString.replace(

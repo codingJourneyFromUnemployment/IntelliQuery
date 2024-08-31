@@ -30,9 +30,12 @@ export async function POST(request: Request) {
     });
 
     const data = await response.json();
-    const { ragProcessID } = data;
+    const { ragProcessID, intentCategory } = data;
     
-    return new Response(JSON.stringify({ ragProcessID }), {
+    return new Response(JSON.stringify({
+      ragProcessID,
+      intentCategory,
+    }), {
       headers: {
         "Content-Type": "application/json",
       },

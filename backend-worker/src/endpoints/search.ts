@@ -53,6 +53,7 @@ const searchMainEndpoint = async (c: Context) => {
     return c.json({
       statuscode: 200,
       ragProcessID: ragProcessID,
+      intentCategory: intentCategory,
     });
   } catch (error) {
     console.error(`Error in searchMainEndpoint: ${error}`);

@@ -80,7 +80,7 @@ const sseEndpoint = async (c: Context) => {
           data: "RAG process failed",
           event: "error",
         });
-        break;
+        return;
       }
 
       if (currentRAGProcess.status === RAGProcessStatus.COMPLETED) {

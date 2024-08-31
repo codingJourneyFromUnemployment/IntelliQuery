@@ -75,10 +75,11 @@ export interface Bindings {
   // cloudflare bindings
   DB: D1Database;
   RAGProcess: KVNamespace;
-  DEEPRAGPROCESSDO : DurableObjectNamespace;
+  DEEPRAGPROCESSDO: DurableObjectNamespace;
 
   // Environment variables
-  OPENROUTER_MODEL: string;
+  OPENROUTER_MODEL_ENG: string;
+  OPENROUTER_MODEL_CHN: string;
   OPENROUTER_API_KEY: string;
   SERPER_API_KEY: string;
   JINA_API_KEY: string;

@@ -1,4 +1,5 @@
-OPENROUTER_MODEL="openai/gpt-4o-2024-08-06"
+OPENROUTER_MODEL_CHN="openai/gpt-4o-2024-08-06"
+OPENROUTER_MODEL_ENG="cognitivecomputations/dolphin-mixtral-8x22b"
 OPENROUTER_API_KEY=""
 SERPER_API_KEY=""
 JINA_API_KEY=""

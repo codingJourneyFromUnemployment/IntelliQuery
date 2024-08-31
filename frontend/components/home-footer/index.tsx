@@ -66,7 +66,7 @@ const navigation = {
 
 export default function HomeFooter() {
   return (
-    <footer className="bg-white mb-0 w-full fixed bottom-0 md:flex md:justify-center">
+    <footer className="bg-white mb-0 w-full fixed bottom-0 z-10 md:flex md:justify-center">
       <div className="flex flex-col items-center mt-8 border-t border-gray-900/10 pt-8 md:flex-row-reverse md:items-center md:justify-between md:w-5/6">
         <div className="flex space-x-6 md:order-2">
           {navigation.social.map((item) => (

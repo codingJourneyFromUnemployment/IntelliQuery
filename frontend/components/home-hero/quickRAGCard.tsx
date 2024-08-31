@@ -11,7 +11,7 @@ const QuickRAGCard: React.FC<QuickRAGCardProps> = ({
   parsedResults,
   createMarkup,
 }) => {
-  const { deepRAGResults } = useStore();
+  const { deepRAGResults, intentCategory } = useStore();
 
   return (
     <div className="flex flex-col items-center mx-6 md:w-4/5 xl:w-2/3">
@@ -25,20 +25,21 @@ const QuickRAGCard: React.FC<QuickRAGCardProps> = ({
             dangerouslySetInnerHTML={createMarkup(parsedResults)}
           />
         </div>
-        {deepRAGResults ? (
-          <Link
-            href="/deep-rag-results"
-            target="_blank"
-            className="text-pretty text-xl text-center md:text-start text-gradient-primary hover:underline hover:font-bold cursor-pointer"
-          >
-            DeepRAG completed, click here to dive in →
-          </Link>
-        ) : (
-          <h3 className="text-xl text-center md:text-start text-gradient-primary">
-            Deep Rag for your search is still in progress. It may take less than
-            1 minute. You can check it later...
-          </h3>
-        )}
+        {intentCategory === "2" &&
+          (deepRAGResults ? (
+            <Link
+              href="/deep-rag-results"
+              target="_blank"
+              className="text-pretty text-xl text-center md:text-start text-gradient-primary hover:underline hover:font-bold cursor-pointer"
+            >
+              DeepRAG completed, click here to dive in →
+            </Link>
+          ) : (
+            <h3 className="text-xl text-center md:text-start text-gradient-primary">
+              Deep Rag for your search is still in progress. It may take less
+              than 1 minute. You can check it later...
+            </h3>
+          ))}
       </div>
     </div>
   );
