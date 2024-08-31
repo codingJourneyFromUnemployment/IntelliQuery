@@ -1,4 +1,6 @@
 import React from "react";
+import Link from "next/link";
+import useStore from "../../store/store";
 
 interface QuickRAGCardProps {
   parsedResults: string;
@@ -9,10 +11,12 @@ const QuickRAGCard: React.FC<QuickRAGCardProps> = ({
   parsedResults,
   createMarkup,
 }) => {
+  const { deepRAGResults } = useStore();
+
   return (
     <div className="flex flex-col items-center mx-6 md:w-4/5 xl:w-2/3">
       <div className="w-full">
-        <h3 className="text-pretty text-xl text-center md:text-start text-gradient-primary mb-4">
+        <h3 className="text-xl text-center md:text-start text-gradient-primary mb-4">
           Instant Answers:
         </h3>
         <div className="bg-gray-50 rounded-lg p-6 mb-6 shadow-sm">
@@ -21,10 +25,20 @@ const QuickRAGCard: React.FC<QuickRAGCardProps> = ({
             dangerouslySetInnerHTML={createMarkup(parsedResults)}
           />
         </div>
-        <h3 className="text-pretty text-xl text-center md:text-start text-gradient-primary">
-          Deep Rag for your search is still in progress. You can check it
-          later...
-        </h3>
+        {deepRAGResults ? (
+          <Link
+            href="/deep-rag-results"
+            target="_blank"
+            className="text-pretty text-xl text-center md:text-start text-gradient-primary hover:underline hover:font-bold cursor-pointer"
+          >
+            DeepRAG completed, click here to dive in →
+          </Link>
+        ) : (
+          <h3 className="text-xl text-center md:text-start text-gradient-primary">
+            Deep Rag for your search is still in progress. It may take less than
+            1 minute. You can check it later...
+          </h3>
+        )}
       </div>
     </div>
   );

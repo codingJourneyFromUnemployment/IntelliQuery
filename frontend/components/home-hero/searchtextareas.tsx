@@ -13,7 +13,10 @@ export default function SimplifiedSearchTextArea({
   onSendMessage,
 }: SimplifiedSearchTextAreaProps) {
   const [message, setMessage] = useState("");
-  const [isSearching, setIsSearching] = useState(false);
+  const {
+    isSearching,
+    setIsSearching,
+  } = useStore();
 
   const handleSearch = async () => {
     if (message.trim() === "") {

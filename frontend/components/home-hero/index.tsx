@@ -11,10 +11,15 @@ const createMarkup = (html: string) => {
 };
 
 export default function HomeHero() {
-  const [isSearching, setIsSearching] = useState(false);
-  const { quickRAGResults, setQuickRAGResults, deepRAGResults, setDeepRAGResults } = useStore();
+  const {
+    quickRAGResults,
+    setQuickRAGResults,
+    deepRAGResults,
+    setDeepRAGResults,
+    isSearching,
+    setIsSearching,
+  } = useStore();
   const [parsedQuickResults, setParsedQuickResults] = useState("");
-  const [parsedDeepResults, setParsedDeepResults] = useState("");
   const eventSourceRef = useRef<EventSource | null>(null);
 
   useEffect(() => {
@@ -41,21 +46,6 @@ export default function HomeHero() {
     }
   }, [quickRAGResults]);
 
-  useEffect(() => {
-    if (deepRAGResults) {
-      const parseMarkdown = async () => {
-        try {
-          const parsed = await marked(deepRAGResults);
-          setParsedDeepResults(parsed);
-        } catch (error) {
-          console.error("Error parsing markdown:", error);
-          setParsedDeepResults("Error parsing deepRAG content");
-        }
-      };
-      parseMarkdown();
-    }
-  }, [deepRAGResults]);
-
   const sseRegister = (eventSource: EventSource) => {
     eventSource.addEventListener("quickRAGContent Push", (event) => {
       console.log("Received data:", event.data);
@@ -74,6 +64,7 @@ export default function HomeHero() {
         eventSourceRef.current = null;
       } else {
         setDeepRAGResults(deepRAGProfile);
+        localStorage.setItem("deepRAGProfile", deepRAGProfile);
       }
     });
 
@@ -129,7 +120,8 @@ export default function HomeHero() {
       sseRegister(eventSource);
 
       console.log("SSE registered for quickRAGContent and DeepRAGCont Push");
-    } finally {
+    } catch (error) {
+      console.error("Error initiating search:", error);
       setIsSearching(false);
     }
   };

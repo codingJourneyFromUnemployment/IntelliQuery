@@ -9,7 +9,7 @@ const useStore = create<Store & KeyActions>((set, get) => ({
   deepRAGResults: "",
   fullRAGRawContent: "",
   currentRAGProcessStatus: "pending",
-  isLoading: false,
+  isSearching: false,
 
 
   setCurrentUserId: (currentUserId) => set({ currentUserId }),
@@ -20,7 +20,7 @@ const useStore = create<Store & KeyActions>((set, get) => ({
   setFullRAGRawContent: (fullRAGRawContent) => set({ fullRAGRawContent }),
   setCurrentRAGProcessStatus: (currentRAGProcessStatus) =>
     set({ currentRAGProcessStatus }),
-  setIsLoading: (isLoading) => set({ isLoading }),
+  setIsSearching: (isSearching) => set({ isSearching }),
 }));
 
 export default useStore;

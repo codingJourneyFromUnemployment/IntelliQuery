@@ -12,7 +12,7 @@ export interface Store {
     | "quick RAG"
     | "full RAG"
     | "intent recognition";
-  isLoading: boolean;
+  isSearching: boolean;
 }
 
 export interface KeyActions {
@@ -25,5 +25,5 @@ export interface KeyActions {
   setCurrentRAGProcessStatus: (
     currentRAGProcessStatus: Store["currentRAGProcessStatus"]
   ) => void;
-  setIsLoading: (isLoading: Store["isLoading"]) => void;
+  setIsSearching: (isSearching: Store["isSearching"]) => void;
 }
