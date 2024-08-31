@@ -21,7 +21,7 @@ const QuickRAGCard: React.FC<QuickRAGCardProps> = ({
         </h3>
         <div className="bg-gray-50 rounded-lg p-6 mb-6 shadow-sm">
           <div
-            className="markdown-content text-lg text-pretty text-start text-gray-700"
+            className="markdown-content text-lg text-pretty text-start text-gray-700 prose prose-sm md:prose lg:prose-lg xl:prose-xl"
             dangerouslySetInnerHTML={createMarkup(parsedResults)}
           />
         </div>

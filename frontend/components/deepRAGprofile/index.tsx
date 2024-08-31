@@ -12,7 +12,15 @@ export default function DeepRAGProfile() {
       const rawResults = localStorage.getItem("deepRAGProfile");
       if (rawResults) {
         try {
-          const parsed = await marked(rawResults);
+          const jsonParsed = JSON.parse(rawResults);
+
+          marked.setOptions({
+            gfm: true,
+            breaks: true,
+          });
+
+          const parsed = await marked.parse(jsonParsed);
+          console.log(parsed);
           setParsedResults(parsed);
         } catch (error) {
           console.error("Error parsing markdown:", error);
@@ -28,7 +36,7 @@ export default function DeepRAGProfile() {
     fetchDeepRAGResults();}, []);
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="container mx-auto px-4 py-8 flex flex-col items-center">
       <h1 className="text-3xl text-gradient-primary font-bold mb-6">
         Your Deep RAG Results
       </h1>
@@ -36,7 +44,7 @@ export default function DeepRAGProfile() {
         <p className="text-gradient-primary">Loading results...</p>
       ) : (
         <div
-          className="bg-gray-50 rounded-lg shadow-md p-6"
+          className="bg-gray-50 rounded-lg shadow-md p-6 prose prose-sm md:prose lg:prose-lg xl:prose-xl"
           dangerouslySetInnerHTML={{ __html: parsedResults }}
         />
       )}
