@@ -52,10 +52,24 @@ export const IntentRecognitionService = {
       if(intentCategory === "1") {
         const newIntentCategory = "DIRECT_LLM_ANSWER";
         const updatedQuery = await D1services.updateIntentCategory(query, newIntentCategory, c);
+
+        await ragProcessManager.updateIntentCategory(
+          c.env.currentRAGProcessId,
+          intentCategory,
+          c
+        );
+
       } else if(intentCategory === "2") {
         const newIntentCategory = "RAG_PROCESS";
         let updatedQuery = await D1services.updateIntentCategory(query, newIntentCategory, c);
         updatedQuery = await D1services.updateSubQueries(query, intentRecognitionJson, c);
+
+        await ragProcessManager.updateIntentCategory(
+          c.env.currentRAGProcessId,
+          intentCategory,
+          c
+        );
+        
       } else {
         throw new Error("Invalid intent category");
       }

@@ -36,8 +36,7 @@ const QuickRAGCard: React.FC<QuickRAGCardProps> = ({
             </Link>
           ) : (
             <h3 className="text-xl text-center md:text-start text-gradient-primary">
-              Deep Rag for your search is still in progress. It may take less
-              than 1 minute. You can check it later...
+              Deep Rag for your search is still in progress. It may take less than 1 minute. You can check it later. don't close this page or refresh it.
             </h3>
           ))}
       </div>

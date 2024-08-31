@@ -5,6 +5,7 @@ import useStore from "../../store/store";
 import { marked } from "marked";
 import Image from "next/image";
 import QuickRAGCard from "./quickRAGCard";
+import { escape } from "querystring";
 
 const createMarkup = (html: string) => {
   return { __html: html };
@@ -30,6 +31,10 @@ export default function HomeHero() {
       if (eventSourceRef.current) {
         eventSourceRef.current.close();
       }
+      const quickRAGContent = localStorage.getItem("quickRAGContent");
+      if (quickRAGContent) {
+        setQuickRAGResults(quickRAGContent);
+      }
     };
   }, []);
 
@@ -54,6 +59,7 @@ export default function HomeHero() {
       const quickRAGContent = event.data;
 
       setQuickRAGResults(quickRAGContent);
+      localStorage.setItem("quickRAGContent", quickRAGContent);
     });
 
     eventSource.addEventListener("deepRAGProfile Push", (event) => {
@@ -67,6 +73,7 @@ export default function HomeHero() {
       } else {
         setDeepRAGResults(deepRAGProfile);
         localStorage.setItem("deepRAGProfile", deepRAGProfile);
+        setIsSearching(false);
       }
     });
 
@@ -95,6 +102,7 @@ export default function HomeHero() {
       // Close any existing EventSource
       if (eventSourceRef.current) {
         eventSourceRef.current.close();
+        eventSourceRef.current = null;
       }
 
       const res = await fetch("/api/search", {

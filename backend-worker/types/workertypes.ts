@@ -62,6 +62,7 @@ export type RAGProcess = {
     | "quickRAG sent"
     | "full RAG"
     | "intent recognition";
+  intentCategory?: string;
   quickRAGContent?: string;
   fullRAGRawContent?: string;
   deepRAGProfile?: string;

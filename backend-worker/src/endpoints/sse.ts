@@ -53,6 +53,22 @@ const sseEndpoint = async (c: Context) => {
         );
       }
 
+      if(currentRAGProcess.status === RAGProcessStatus.QUICKRAG_SENT && currentRAGProcess.intentCategory === "1") {
+        console.log("Direct LLM Answer, close the stream");
+        await stream.writeSSE({
+          data: "COMPLETED",
+          event: "completed",
+        });
+
+        await ragProcessManager.updateRAGProcess(
+          c.env.currentRAGProcessId,
+          RAGProcessStatus.COMPLETED,
+          c
+        );
+        
+        return;
+      } 
+
       if (deepRAGProfile) {
         console.log("start writeSSE for deepRAGProfile");
 

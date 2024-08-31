@@ -30,11 +30,9 @@ export default function SimplifiedSearchTextArea({
       await onSendMessage(message);
     } catch (error) {
       console.error("Search error:", error);
-    } finally {
-      console.log("Search completed");
       setMessage("");
       setIsSearching(false);
-    }
+    } 
   };
 
   const handleKeyDown = async (
