@@ -10,7 +10,7 @@ import D1middleware from "../middlewares/D1middleware";
 import sseEndpoint from "./endpoints/sse";
 
 
-export { DeepRAGDurableObject } from "../services/deepRAGDO";
+// export { DeepRAGDurableObject } from "../services/deepRAGDO";
 
 const app = new Hono<{ Bindings: Bindings }>();
 
