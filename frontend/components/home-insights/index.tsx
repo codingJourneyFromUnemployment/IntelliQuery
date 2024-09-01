@@ -1,6 +1,8 @@
 "use client";
 import { useEffect } from "react";
 import useStore from "../../store/store";
+import Link from "next/link";
+import { communityContent } from "../../types/store";
 
 export default function HomeInsights() {
   const { communityContent, setCommunityContent } = useStore();
@@ -9,9 +11,16 @@ export default function HomeInsights() {
     try {
       const res = await fetch("http://localhost:8787/");
       const data = await res.json();
-      const communityContent = data.communityContent;
+      const communityContent = data.communityContent.map((item : communityContent) => ({
+        ...item,
+        content: JSON.parse(item.content), // Parse the content string
+      }));
       setCommunityContent(communityContent);
-      console.log("Community Content: ", communityContent);
+      localStorage.setItem(
+        "communityContent",
+        JSON.stringify(communityContent)
+      );
+      console.log("stored communityContent:", JSON.stringify(communityContent));
     } catch (error) {
       console.error(error);
     }
@@ -32,17 +41,17 @@ export default function HomeInsights() {
       >
         {communityContent.map((content) => (
           <li key={content.queryId} className="relative">
-            <div className="group aspect-h-7 aspect-w-20 block w-full overflow-hidden rounded-lg bg-gray-100 focus-within:ring-2 focus-within:ring-indigo-300 focus-within:ring-offset-2 focus-within:ring-offset-gray-100">
-              <img
-                alt=""
-                src={content.img}
-                className="pointer-events-none object-cover group-hover:opacity-75"
-              />
-              <button
-                type="button"
-                className="absolute inset-0 focus:outline-none"
-              ></button>
-            </div>
+            <Link 
+              href={`/content/${content.queryId}`}
+              target="_blank">
+              <div className="group aspect-h-7 aspect-w-20 block w-full overflow-hidden rounded-lg bg-gray-100 focus-within:ring-2 focus-within:ring-indigo-300 focus-within:ring-offset-2 focus-within:ring-offset-gray-100">
+                <img
+                  alt=""
+                  src={content.img}
+                  className="pointer-events-none object-cover group-hover:opacity-70"
+                />
+              </div>
+            </Link>
           </li>
         ))}
       </ul>

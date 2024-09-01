@@ -14,6 +14,8 @@ export default function DeepRAGProfile() {
         try {
           const jsonParsed = JSON.parse(rawResults);
 
+          console.log("jsonParsed:", jsonParsed);
+
           marked.setOptions({
             gfm: true,
             breaks: true,
