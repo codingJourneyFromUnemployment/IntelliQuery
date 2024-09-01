@@ -17,7 +17,7 @@ const sseEndpoint = async (c: Context) => {
   console.log("SSE endpoint for RAG Process ID:", ragProcessIDRequire);
 
   return streamSSE(c, async (stream) => {
-    let timeout = 60000; // 1 minutes timeout
+    let timeout = 80000; // 80 seconds timeout
     const interval = 1000; // 1 second interval
 
     while (timeout > 0) {

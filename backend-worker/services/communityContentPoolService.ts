@@ -6,36 +6,54 @@ export const communityContentPoolService = {
   async fetch20CommunityContent(c: Context): Promise<ContentWithImage[]> {
     try {
       const communityContent = await D1services.fetch20DeepRAGProfiles(c);
-    const contentArry = communityContent.map((deepRAGProfileString: string) => {
-      console.log(deepRAGProfileString);
-      const deepRAGProfileObj = JSON.parse(
-        deepRAGProfileString
-      ) as DeepRAGProfile;
+      const contentArray = communityContent
+        .map((deepRAGProfile: any) => {
+          console.log("Raw deepRAGProfile:", deepRAGProfile);
 
-      if (deepRAGProfileObj.content) {
-        const content = deepRAGProfileObj.content;
+          let deepRAGProfileObj: DeepRAGProfile;
 
-        //extract img_url from content
+          if (typeof deepRAGProfile === "string") {
+            try {
+              deepRAGProfileObj = JSON.parse(deepRAGProfile);
+            } catch (parseError) {
+              console.error("Failed to parse string:", parseError);
+              return null;
+            }
+          } else if (
+            typeof deepRAGProfile === "object" &&
+            deepRAGProfile !== null
+          ) {
+            deepRAGProfileObj = deepRAGProfile;
+          } else {
+            console.error("Unexpected data type:", typeof deepRAGProfile);
+            return null;
+          }
 
-        const imgMatch = content.match(/!\[.*?\]\((https?:\/\/[^\s)]+)\)/);
-        const img = imgMatch ? imgMatch[1] : "";
+          if (deepRAGProfileObj.content) {
+            const content = deepRAGProfileObj.content;
+            const imgMatch = content.match(/!\[.*?\]\((https?:\/\/[^\s)]+)\)/);
+            const img = imgMatch ? imgMatch[1] : "";
 
-        const contentWithImage: ContentWithImage = {
-          content,
-          img,
-        };
+            const contentWithImage: ContentWithImage = {
+              content,
+              img,
+            };
 
-        return contentWithImage;
-      } else {
-        return "";
-      }
-    });
-    return contentArry;
-  } catch (error) {
+            return contentWithImage;
+          } else {
+            return null;
+          }
+        })
+        .filter((item: ContentWithImage) => item !== null);
+
+      return contentArray;
+    } catch (error) {
       console.error(
         `Error in communityContentPoolService.fetch20CommunityContent: ${error}`
       );
-      throw new Error("Error in communityContentPoolService.fetch20CommunityContent");
+      throw new Error(
+        "Error in communityContentPoolService.fetch20CommunityContent"
+      );
     }
-  }
+  },
 };
