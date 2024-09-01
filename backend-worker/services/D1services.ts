@@ -1,7 +1,6 @@
-import { string } from "zod";
 import { Query, SearchResult, IntentRecognitionJson } from "../types/workertypes";
 import { Context } from "hono";
-import { create } from "domain";
+
 
 const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -210,6 +209,21 @@ export const D1services = {
       return deepRAGProfile;
     } catch (error) {
       console.error(`Error in D1services.fetchDeepRAGProfileByQueryId: ${error}`);
+    }
+  },
+
+  async fetch20DeepRAGProfiles(c: Context) {
+    const prisma = c.get("prisma");
+
+    try {
+      const deepRAGProfiles = await prisma.deepRAGProfile.findMany({
+        take: 20,
+        orderBy: { createdAt: "desc" },
+      });
+
+      return deepRAGProfiles;
+    } catch (error) {
+      console.error(`Error in D1services.fetch20DeepRAGProfiles: ${error}`);
     }
   }
 };

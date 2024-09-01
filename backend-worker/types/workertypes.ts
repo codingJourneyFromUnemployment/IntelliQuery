@@ -131,3 +131,8 @@ export interface IntentRecognitionJson {
   sub_questions: string[];
   confidence_score: number;
 } 
+
+export interface ContentWithImage {
+  img: string;
+  content: string;
+}
