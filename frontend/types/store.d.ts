@@ -1,3 +1,9 @@
+export interface communityContent {
+  queryId: string;
+  content: string;
+  img: string;
+}
+
 export interface Store {
   currentUserId: string;
   currentQueryId: string;
@@ -5,7 +11,7 @@ export interface Store {
   quickRAGResults: string;
   fullRAGRawContent: string;
   deepRAGResults: string;
-  communityContent: string[];
+  communityContent: communityContent[];
   currentRAGProcessStatus:
     | "pending"
     | "completed"

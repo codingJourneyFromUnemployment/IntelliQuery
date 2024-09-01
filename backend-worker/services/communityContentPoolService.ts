@@ -8,7 +8,6 @@ export const communityContentPoolService = {
       const communityContent = await D1services.fetch20DeepRAGProfiles(c);
       const contentArray = communityContent
         .map((deepRAGProfile: any) => {
-          console.log("Raw deepRAGProfile:", deepRAGProfile);
 
           let deepRAGProfileObj: DeepRAGProfile;
 
@@ -33,8 +32,10 @@ export const communityContentPoolService = {
             const content = deepRAGProfileObj.content;
             const imgMatch = content.match(/!\[.*?\]\((https?:\/\/[^\s)]+)\)/);
             const img = imgMatch ? imgMatch[1] : "";
+            const queryId = deepRAGProfileObj.queryId;
 
             const contentWithImage: ContentWithImage = {
+              queryId,
               content,
               img,
             };

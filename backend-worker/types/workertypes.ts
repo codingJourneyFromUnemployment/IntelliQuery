@@ -133,6 +133,7 @@ export interface IntentRecognitionJson {
 } 
 
 export interface ContentWithImage {
+  queryId: string;
   img: string;
   content: string;
 }

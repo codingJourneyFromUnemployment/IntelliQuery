@@ -93,7 +93,7 @@ Based on the above work, you need to carefully craft a RAG-enhanced answer to be
 
 3. To present the multi-level, multi-dimensional, and authenticity of the content, you must output in markdown format and list the reference information sources (with links) at the end like a paper. When adding markdown format tags, pay attention to maintaining the overall aesthetics of the content layout, for example, you can add a blank line each time you change lines to facilitate front-end webpage parsing and rendering. The answer you generate needs to render a complete Deep RAG page on the front end, so it must be detailed and have more than 4,000 words. For this, you may need to extract a large amount of material.\n
 
-4. Extract some representative image links from the scraped content of the detail pages and insert them into the answer output in markdown format, so that a long article page with rich images can be generated after front-end parsing.\n 
+4. Extract some representative image links from the scraped content of the detail pages and insert them into the answer output in markdown format, so that a long article page with rich images can be generated after front-end parsing. Note: The image in the first link is the cover of the page and must be of sufficiently large dimensions.\n 
 
 5. The language of your final generated answer needs to be consistent with the language of the user's initial natural language search needs in the next point.\n
 
