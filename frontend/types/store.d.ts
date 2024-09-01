@@ -5,6 +5,7 @@ export interface Store {
   quickRAGResults: string;
   fullRAGRawContent: string;
   deepRAGResults: string;
+  communityContent: string[];
   currentRAGProcessStatus:
     | "pending"
     | "completed"
@@ -24,6 +25,7 @@ export interface KeyActions {
   setDeepRAGResults: (deepRAGResults: Store["deepRAGResults"]) => void;
 
   setFullRAGRawContent: (fullRAGRawContent: Store["fullRAGRawContent"]) => void;
+  setCommunityContent: (communityContent: Store["communityContent"]) => void;
   setCurrentRAGProcessStatus: (
     currentRAGProcessStatus: Store["currentRAGProcessStatus"]
   ) => void;

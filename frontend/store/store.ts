@@ -8,6 +8,7 @@ const useStore = create<Store & KeyActions>((set, get) => ({
   quickRAGResults: "",
   deepRAGResults: "",
   fullRAGRawContent: "",
+  communityContent: [],
   currentRAGProcessStatus: "pending",
   isSearching: false,
 
@@ -20,6 +21,7 @@ const useStore = create<Store & KeyActions>((set, get) => ({
   setDeepRAGResults: (deepRAGResults) => set({ deepRAGResults }),
 
   setFullRAGRawContent: (fullRAGRawContent) => set({ fullRAGRawContent }),
+  setCommunityContent: (communityContent) => set({ communityContent }),
   setCurrentRAGProcessStatus: (currentRAGProcessStatus) =>
     set({ currentRAGProcessStatus }),
   setIsSearching: (isSearching) => set({ isSearching }),

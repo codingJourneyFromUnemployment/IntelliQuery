@@ -22,9 +22,6 @@ const QuickRAGCard: React.FC<QuickRAGCardProps> = ({
     const intentCategory = localStorage.getItem("intentCategory");
     const deepRAGResults = localStorage.getItem("deepRAGProfile");
 
-    console.log("Stored Intent Category:", intentCategory);
-    console.log("Stored Deep RAG Results:", deepRAGResults);
-
     if (intentCategory) {
       setIntentCategory(intentCategory);
     }
@@ -33,11 +30,6 @@ const QuickRAGCard: React.FC<QuickRAGCardProps> = ({
       setDeepRAGResults(deepRAGResults);
     }
   }, []);
-
-  console.log("Rendering with:", {
-    intentCategory,
-    deepRAGResults,
-  });
 
   return (
     <div className="flex flex-col items-center mx-6 md:w-4/5 xl:w-2/3">
@@ -56,7 +48,7 @@ const QuickRAGCard: React.FC<QuickRAGCardProps> = ({
             <Link
               href="/deep-rag-results"
               target="_blank"
-              className="text-pretty text-xl text-center md:text-start text-white bg-gradient-primary cursor-pointer py-2 px-4 rounded-xl shadow-md animate-pulse"
+              className="text-pretty text-sm md:text text-center md:text-start text-white bg-gradient-primary cursor-pointer py-2 px-4 rounded-xl shadow-md animate-pulse mt-4"
             >
               DeepRAG completed, click here to dive in
             </Link>
