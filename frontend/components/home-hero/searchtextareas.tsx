@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import TextareaAutosize from "react-textarea-autosize";
 import SearchButton from "./searchbutton";
 import useStore from "@/store/store";
@@ -14,9 +14,24 @@ export default function SimplifiedSearchTextArea({
 }: SimplifiedSearchTextAreaProps) {
   const [message, setMessage] = useState("");
   const {
+    intentCategory,
+    quickRAGResults,
+    deepRAGResults,
     isSearching,
     setIsSearching,
   } = useStore();
+
+  useEffect(() => {
+    if (quickRAGResults && intentCategory === "1") {
+      setIsSearching(false);
+      setMessage("");
+    }}, [quickRAGResults]);
+
+  useEffect(() => {
+    if (deepRAGResults && intentCategory === "2") {
+      setIsSearching(false);
+      setMessage("");
+    }}, [deepRAGResults]);
 
   const handleSearch = async () => {
     if (message.trim() === "") {

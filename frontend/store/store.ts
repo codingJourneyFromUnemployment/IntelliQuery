@@ -15,8 +15,10 @@ const useStore = create<Store & KeyActions>((set, get) => ({
   setCurrentUserId: (currentUserId) => set({ currentUserId }),
   setCurrentQueryId: (currentQueryId) => set({ currentQueryId }),
   setIntentCategory: (intentCategory) => set({ intentCategory }),
+
   setQuickRAGResults: (quickRAGResults) => set({ quickRAGResults }),
   setDeepRAGResults: (deepRAGResults) => set({ deepRAGResults }),
+
   setFullRAGRawContent: (fullRAGRawContent) => set({ fullRAGRawContent }),
   setCurrentRAGProcessStatus: (currentRAGProcessStatus) =>
     set({ currentRAGProcessStatus }),

@@ -98,6 +98,12 @@ export default function HomeHero() {
       setQuickRAGResults("");
       setParsedQuickResults("");
       setDeepRAGResults("");
+      setIntentCategory("");
+
+      //clear local storage 
+      localStorage.removeItem("quickRAGContent");
+      localStorage.removeItem("deepRAGProfile");
+      localStorage.removeItem("intentCategory");
 
       // Close any existing EventSource
       if (eventSourceRef.current) {
@@ -117,6 +123,7 @@ export default function HomeHero() {
       const { ragProcessID, intentCategory } = data;
 
       setIntentCategory(intentCategory);
+      localStorage.setItem("intentCategory", intentCategory);
       console.log(
         `start registering SSE for quickRAGContent Push with ID: ${ragProcessID}`
       );

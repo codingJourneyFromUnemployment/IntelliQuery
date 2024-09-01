@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import useStore from "../../store/store";
 
@@ -11,7 +11,33 @@ const QuickRAGCard: React.FC<QuickRAGCardProps> = ({
   parsedResults,
   createMarkup,
 }) => {
-  const { deepRAGResults, intentCategory } = useStore();
+  const {
+    deepRAGResults,
+    setDeepRAGResults,
+    intentCategory,
+    setIntentCategory,
+  } = useStore();
+
+  useEffect(() => {
+    const intentCategory = localStorage.getItem("intentCategory");
+    const deepRAGResults = localStorage.getItem("deepRAGProfile");
+
+    console.log("Stored Intent Category:", intentCategory);
+    console.log("Stored Deep RAG Results:", deepRAGResults);
+
+    if (intentCategory) {
+      setIntentCategory(intentCategory);
+    }
+
+    if (deepRAGResults) {
+      setDeepRAGResults(deepRAGResults);
+    }
+  }, []);
+
+  console.log("Rendering with:", {
+    intentCategory,
+    deepRAGResults,
+  });
 
   return (
     <div className="flex flex-col items-center mx-6 md:w-4/5 xl:w-2/3">
@@ -30,13 +56,13 @@ const QuickRAGCard: React.FC<QuickRAGCardProps> = ({
             <Link
               href="/deep-rag-results"
               target="_blank"
-              className="text-pretty text-xl text-center md:text-start text-gradient-primary hover:underline hover:font-bold cursor-pointer"
+              className="text-pretty text-xl text-center md:text-start text-white bg-gradient-primary cursor-pointer py-2 px-4 rounded-xl shadow-md animate-pulse"
             >
-              DeepRAG completed, click here to dive in →
+              DeepRAG completed, click here to dive in
             </Link>
           ) : (
             <h3 className="text-xl text-center md:text-start text-gradient-primary">
-              Deep Rag for your search is still in progress. It may take less than 1 minute. You can check it later. don't close this page or refresh it.
+              Caution: Deep Rag for your search is still in progress. It may take less than 1 minute. You can check it later. don't close this page 、refresh it or click links above before it's done, or you may lose the deep RAG results!
             </h3>
           ))}
       </div>
