@@ -31,6 +31,14 @@ const QuickRAGCard: React.FC<QuickRAGCardProps> = ({
     }
   }, []);
 
+  const createMarkupWithNewTabLinks = (html: string) => {
+    const modifiedHtml = html.replace(
+      /<a\s+/g,
+      '<a target="_blank" rel="noopener noreferrer" '
+    );
+    return createMarkup(modifiedHtml);
+  }
+
   return (
     <div className="flex flex-col items-center mx-6 md:w-4/5 xl:w-2/3">
       <div className="w-full">
@@ -40,7 +48,7 @@ const QuickRAGCard: React.FC<QuickRAGCardProps> = ({
         <div className="bg-gray-50 rounded-lg p-6 mb-6 shadow-sm">
           <div
             className="markdown-content text-lg text-pretty text-start text-gray-700 prose prose-sm md:prose lg:prose-lg xl:prose-xl"
-            dangerouslySetInnerHTML={createMarkup(parsedResults)}
+            dangerouslySetInnerHTML={createMarkupWithNewTabLinks(parsedResults)}
           />
         </div>
         {intentCategory === "2" &&
