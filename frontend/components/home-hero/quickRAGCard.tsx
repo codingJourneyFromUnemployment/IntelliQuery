@@ -56,13 +56,16 @@ const QuickRAGCard: React.FC<QuickRAGCardProps> = ({
             <Link
               href="/deep-rag-results"
               target="_blank"
-              className="text-pretty text-sm md:text text-center md:text-start text-white bg-gradient-primary cursor-pointer py-2 px-4 rounded-xl shadow-md animate-pulse mt-4"
+              className="text-pretty text-sm md:text text-center md:text-start text-white bg-gradient-primary cursor-pointer py-2 px-4 rounded-full drop-shadow-md animate-pulse mt-4"
             >
               DeepRAG completed, click here to dive in
             </Link>
           ) : (
             <h3 className="text-xl text-center md:text-start text-gradient-primary">
-              Caution: Deep Rag for your search is still in progress. It may take less than 1 minute. You can check it later. don't close this page 、refresh it or click links above before it's done, or you may lose the deep RAG results!
+              Caution: Deep Rag for your search is still in progress. It may
+              take less than 1 minute. You can check it later. don't close this
+              page 、refresh it or click links above before it's done, or you
+              may lose the deep RAG results!
             </h3>
           ))}
       </div>

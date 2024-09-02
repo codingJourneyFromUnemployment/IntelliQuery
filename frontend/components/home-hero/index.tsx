@@ -120,10 +120,11 @@ export default function HomeHero() {
       });
 
       const data = await res.json();
-      const { ragProcessID, intentCategory } = data;
+      const { ragProcessID, intentCategory, jwtToken } = data;
 
       setIntentCategory(intentCategory);
       localStorage.setItem("intentCategory", intentCategory);
+      localStorage.setItem("jwtToken", jwtToken);
       console.log(
         `start registering SSE for quickRAGContent Push with ID: ${ragProcessID}`
       );

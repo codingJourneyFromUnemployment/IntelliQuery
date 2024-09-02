@@ -3,4 +3,5 @@ OPENROUTER_MODEL_ENG="cognitivecomputations/dolphin-mixtral-8x22b"
 OPENROUTER_API_KEY=""
 SERPER_API_KEY=""
 JINA_API_KEY=""
+JWT_SECRET="YndXRn98WGhMTd2owV"
 

@@ -5,6 +5,8 @@ import { IntentRecognitionService } from "../../services/intentRecognitionServic
 import { quickRAGService } from "../../services/quickRAGService";
 import { deepRAGService } from "../../services/deepRAGService";
 import { D1services } from "../../services/D1services";
+import { jwtService } from "../../services/jwtService";
+import { jwt } from "hono/jwt";
 
 const searchMainEndpoint = async (c: Context) => {
   try {
@@ -45,6 +47,9 @@ const searchMainEndpoint = async (c: Context) => {
         500
       );
     }
+    // issue JWT token for future deletion of the query
+    const token = await jwtService.signQueryByQueryId(queryID, c);
+
 
     // return RAGProceesID for SSE endpoint
 
@@ -54,6 +59,7 @@ const searchMainEndpoint = async (c: Context) => {
       statuscode: 200,
       ragProcessID: ragProcessID,
       intentCategory: intentCategory,
+      jwtToken: token,
     });
   } catch (error) {
     console.error(`Error in searchMainEndpoint: ${error}`);

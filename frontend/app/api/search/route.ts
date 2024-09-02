@@ -30,11 +30,12 @@ export async function POST(request: Request) {
     });
 
     const data = await response.json();
-    const { ragProcessID, intentCategory } = data;
+    const { ragProcessID, intentCategory, jwtToken } = data;
     
     return new Response(JSON.stringify({
       ragProcessID,
       intentCategory,
+      jwtToken
     }), {
       headers: {
         "Content-Type": "application/json",
