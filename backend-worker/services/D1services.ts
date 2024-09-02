@@ -225,6 +225,30 @@ export const D1services = {
     } catch (error) {
       console.error(`Error in D1services.fetch20DeepRAGProfiles: ${error}`);
     }
+  },
+
+  async deleteQueryByID(queryID: string, c: Context) {
+    const prisma = c.get("prisma");
+
+    try {
+      await prisma.query.delete({
+        where: { id: queryID },
+      });
+
+      await prisma.searchResult.deleteMany({
+        where: { queryId: queryID },
+      });
+
+      await prisma.RAGResult.deleteMany({
+        where: { queryId: queryID },
+      });
+
+      await prisma.deepRAGProfile.deleteMany({
+        where: { queryId: queryID },
+      });
+    } catch (error) {
+      console.error(`Error in D1services.deleteQueryByID: ${error}`);
+    }
   }
 };
 

@@ -49,6 +49,11 @@ export type DeepRAGProfile = {
   updatedAt: Date;
 };
 
+export type QueryDeleteRequest = {
+  queryId: string;
+  jwtToken: string;
+};
+
 // RAGProcess Model (for KV)
 
 export type RAGProcess = {

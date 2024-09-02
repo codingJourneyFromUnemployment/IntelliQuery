@@ -4,12 +4,12 @@ import searchMainEndpoint from "./endpoints/search";
 import getContents from "./endpoints/getcontents";
 import { Hono } from "hono";
 import { cors } from "hono/cors";
-import { querySchema } from "./validation/zod-validator";
+import { querySchema, deleteQueryByIdSchema } from "./validation/zod-validator";
 import { zValidator } from "@hono/zod-validator";
 import { Bindings } from "../types/workertypes";
 import D1middleware from "../middlewares/D1middleware";
 import sseEndpoint from "./endpoints/sse";
-import { get } from "http";
+import deleteQueryById from "./endpoints/deletequery";
 
 
 // export { DeepRAGDurableObject } from "../services/deepRAGDO";
@@ -35,6 +35,9 @@ app.get("/sse/:ragProcessID", sseEndpoint);
 app.post("/search",
 	zValidator("json", querySchema),
 	searchMainEndpoint)
+app.post("/deletequery",
+  zValidator("json", deleteQueryByIdSchema),
+  deleteQueryById);
 
 export default app;
 

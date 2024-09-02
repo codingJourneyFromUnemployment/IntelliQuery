@@ -20,5 +20,10 @@ const querySchema = z.object({
   deepRAGProfileId: z.string().optional(),
 });
 
+const deleteQueryByIdSchema = z.object({
+  queryId: z.string(),
+  jwtToken: z.string(),
+});
 
-export { querySchema };
+
+export { querySchema , deleteQueryByIdSchema};

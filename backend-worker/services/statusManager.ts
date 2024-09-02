@@ -11,6 +11,12 @@ enum RAGProcessStatus {
   INTENT_RECOGNITION = "intent recognition",
 }
 
+interface KVListKey {
+  name: string;
+  expiration?: number;
+  metadata?: unknown;
+}
+
 class RAGProcessManager {
   
   async createRAGProcess(query: Query, c: Context): Promise<RAGProcess> {
@@ -108,6 +114,47 @@ class RAGProcessManager {
     await c.env.RAGProcess.put(RAGprocess.id, JSON.stringify(RAGprocess));
 
     return RAGprocess;
+  }
+
+  async deleteRAGProcessByQueryId(queryId: string, c: Context): Promise<void> {
+    let cursor: string | undefined;
+    const deletedKeys: string[] = [];
+
+    try {
+      do {
+        const list = await c.env.RAGProcess.list({
+          cursor,
+          limit: 1000,
+        });
+
+        const deletePromises = list.keys.map(async (key : KVListKey) => {
+          const value = await c.env.RAGProcess.get(key.name);
+          if (value){
+            const ragProcess: RAGProcess = JSON.parse(value);
+            if (ragProcess.queryId === queryId) {
+              await c.env.RAGProcess.delete(key.name);
+              deletedKeys.push(key.name);
+            }
+          }
+        });
+
+        await Promise.all(deletePromises);
+
+        cursor = list.cursor;
+
+
+      } while (cursor);
+
+      console.log(
+        `Deleted ${deletedKeys.length} RAGProcesses for queryId ${queryId}`
+      );
+      console.log(`Deleted keys: ${deletedKeys.join(", ")}`);
+    } catch (error) {
+      console.error(
+        `Error in RAGProcessManager.deleteRAGProcessByQueryID: ${error}`
+      );
+      throw error;
+    }
   }
 }
 
