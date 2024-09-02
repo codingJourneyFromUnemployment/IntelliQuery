@@ -111,3 +111,11 @@ id = "1a0b5b1189a549078b51a90026a4d9cb"
 # [[vectorize]]
 # binding = "MY_INDEX"
 # index_name = "my-index"
+
+[[unsafe.bindings]]
+name = "RATE_LIMITER"
+type = "ratelimit"
+
+namespace_id = "1001"
+
+simple = { limit = 10, period = 60 }

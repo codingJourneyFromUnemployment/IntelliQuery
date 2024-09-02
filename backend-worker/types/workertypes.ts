@@ -81,7 +81,7 @@ export interface Bindings {
   // cloudflare bindings
   DB: D1Database;
   RAGProcess: KVNamespace;
-  DEEPRAGPROCESSDO: DurableObjectNamespace;
+  RATE_LIMITER: any;
 
   // Environment variables
   OPENROUTER_MODEL_ENG: string;

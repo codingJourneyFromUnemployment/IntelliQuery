@@ -25,6 +25,7 @@ export async function POST(request: Request) {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        "X-Query-Id": id,
       },
       body: JSON.stringify(query),
     });

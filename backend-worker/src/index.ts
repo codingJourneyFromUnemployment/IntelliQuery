@@ -32,6 +32,15 @@ app.use("*", async (c, next ) => {
   return corsMiddlewareHandler(c, next);
 })
 
+app.use("/search", async (c, next) => {
+  const XQueryId = c.req.header("X-Query-Id");
+  const { success } = await c.env.RATE_LIMITER.limit({ key: XQueryId });
+  if (!success) {
+    return c.json({ error: "Rate limit exceeded" }, 429);
+  }
+
+  await next();
+});
 
 
 app.get("/", getContents);
