@@ -37,7 +37,7 @@ const navigation = {
     },
     {
       name: "GitHub",
-      href: "#",
+      href: "https://github.com/codingJourneyFromUnemployment/IntelliQuery",
       icon: (props: any) => (
         <svg fill="currentColor" viewBox="0 0 24 24" {...props}>
           <path
@@ -66,14 +66,15 @@ const navigation = {
 
 export default function HomeFooter() {
   return (
-    <footer className="bg-white mb-0 w-full md:flex md:justify-center">
-      <div className="flex flex-col items-center mt-8 border-t border-gray-900/10 pt-8 md:flex-row-reverse md:items-center md:justify-between md:w-5/6">
+    <footer className="w-full pb-4">
+      <div className="flex flex-col items-center mt-8 border-t border-gray-900/10 pt-8 md:flex-row-reverse md:items-center md:justify-between md:w-5/6 mx-auto">
         <div className="flex space-x-6 md:order-2">
           {navigation.social.map((item) => (
             <a
               key={item.name}
               href={item.href}
-              className="text-gray-400 hover:text-gray-500"
+              target="_blank"
+              className="text-gray-400 hover:text-gray-600"
             >
               <span className="sr-only">{item.name}</span>
               <item.icon aria-hidden="true" className="h-6 w-6 md:h-8 md:w-8" />

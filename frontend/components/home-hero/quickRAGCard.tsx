@@ -40,14 +40,14 @@ const QuickRAGCard: React.FC<QuickRAGCardProps> = ({
   }
 
   return (
-    <div className="flex flex-col items-center mx-6 md:w-4/5 xl:w-2/3">
+    <div className="flex flex-col items-center mx-6 md:w-2/3 xl:w-1/2">
       <div className="w-full">
         <h3 className="text-xl text-center md:text-start text-gradient-primary mb-4">
           Instant Answers:
         </h3>
-        <div className="bg-gray-50 rounded-lg p-6 mb-6 shadow-sm">
+        <div className="bg-gray-50 rounded-lg p-6 mb-6 shadow-sm flex flex-col items-center">
           <div
-            className="markdown-content text-lg text-pretty text-start text-gray-700 prose prose-sm md:prose lg:prose-lg xl:prose-xl"
+            className="w-full mx-2 markdown-content text-lg text-pretty text-start text-gray-700 prose prose-sm md:prose lg:prose-lg xl:prose-xl"
             dangerouslySetInnerHTML={createMarkupWithNewTabLinks(parsedResults)}
           />
         </div>

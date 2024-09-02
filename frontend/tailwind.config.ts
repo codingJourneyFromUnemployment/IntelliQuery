@@ -24,6 +24,8 @@ const config: Config = {
           "linear-gradient(to right, rgba(79, 70, 229, 0.2), rgba(168, 85, 247, 0.2), rgba(236, 72, 153, 0.2))",
         "gradient-primary-active":
           "linear-gradient(to right, rgba(79, 70, 229, 0.3), rgba(168, 85, 247, 0.3), rgba(236, 72, 153, 0.3))",
+        "gradient-primary-bg":
+          "linear-gradient(to right, rgba(79, 70, 229, 0.07), rgba(168, 85, 247, 0.07), rgba(236, 72, 153, 0.07))",
       },
     },
   },

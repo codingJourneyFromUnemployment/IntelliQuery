@@ -9,3 +9,7 @@
 .text-gradient-primary {
   @apply bg-clip-text text-transparent bg-gradient-to-r from-primary-start via-primary-middle to-primary-end;
 }
+
+.bg-gradient-primary-light {
+  @apply bg-gradient-primary-bg;
+}

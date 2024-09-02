@@ -9,7 +9,7 @@ export default function HomeHeader() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   return (
-    <header className="bg-white flex justify-center items-center w-full">
+    <header className="flex justify-center items-center w-full">
       <nav
         aria-label="Global"
         className="flex w-11/12 items-center justify-between p-6 lg:px-8"
@@ -42,7 +42,7 @@ export default function HomeHeader() {
         className="lg:hidden"
       >
         <div className="fixed inset-0 z-10" />
-        <DialogPanel className="fixed inset-y-0 right-4 z-10 w-11/12 overflow-y-auto bg-white px-6 py-6 sm:max-w-sm sm:ring-1 sm:ring-gray-900/10">
+        <DialogPanel className="bg-gray-200 opacity-80 fixed inset-y-0 right-4 z-10 w-11/12 overflow-y-auto px-6 py-6 sm:max-w-sm sm:ring-1 sm:ring-gray-900/10">
           <div className="flex items-center justify-between">
             <Logo />
             <button
