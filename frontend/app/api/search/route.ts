@@ -21,7 +21,8 @@ export async function POST(request: Request) {
   try {
 
     // Enter QuickRAG Process
-    const response = await fetch("http://localhost:8787/search", {
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
+    const response = await fetch(`${baseUrl}/search`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

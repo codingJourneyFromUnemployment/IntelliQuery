@@ -135,8 +135,9 @@ export default function HomeHero() {
       );
 
       // Create a new EventSource
+      const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
       const eventSource = new EventSource(
-        `http://localhost:8787/sse/${ragProcessID}`
+        `${baseUrl}/sse/${ragProcessID}`
       );
 
       eventSourceRef.current = eventSource;

@@ -11,7 +11,8 @@ export async function POST(request: Request) {
   };
 
   try {
-    const response = await fetch("http://localhost:8787/deletequery", {
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
+    const response = await fetch(`${baseUrl}/deletequery`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

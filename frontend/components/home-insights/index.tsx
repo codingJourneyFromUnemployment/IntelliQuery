@@ -9,7 +9,8 @@ export default function HomeInsights() {
 
   async function fetchCommunityContents() {
     try {
-      const res = await fetch("http://localhost:8787/");
+      const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
+      const res = await fetch(`${baseUrl}`);
       const data = await res.json();
       const communityContent = data.communityContent.map((item : communityContent) => ({
         ...item,

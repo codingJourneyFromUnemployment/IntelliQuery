@@ -12,8 +12,6 @@ import sseEndpoint from "./endpoints/sse";
 import deleteQueryById from "./endpoints/deletequery";
 
 
-// export { DeepRAGDurableObject } from "../services/deepRAGDO";
-
 const app = new Hono<{ Bindings: Bindings }>();
 
 app.use('*', D1middleware);
