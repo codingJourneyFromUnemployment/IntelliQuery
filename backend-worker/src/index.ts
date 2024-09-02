@@ -18,17 +18,21 @@ const app = new Hono<{ Bindings: Bindings }>();
 
 app.use('*', D1middleware);
 
-app.use(
-  "/*",
-  cors({
-    origin: "http://localhost:3000",
+
+app.use("*", async (c, next ) => {
+  const corsMiddlewareHandler = cors({
+    origin: c.env.CORS_ORIGIN,
     allowMethods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allowHeaders: ["Content-Type", "Authorization"],
     exposeHeaders: ["Content-Length"],
     maxAge: 600,
     credentials: true,
-  })
-);
+  });
+
+  return corsMiddlewareHandler(c, next);
+})
+
+
 
 app.get("/", getContents);
 app.get("/sse/:ragProcessID", sseEndpoint);

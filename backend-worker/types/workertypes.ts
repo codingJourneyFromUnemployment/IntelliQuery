@@ -90,6 +90,7 @@ export interface Bindings {
   SERPER_API_KEY: string;
   JINA_API_KEY: string;
   currentRAGProcessId: string;
+  CORS_ORIGIN: string;
 }
 
 // other types
