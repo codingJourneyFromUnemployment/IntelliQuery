@@ -21,6 +21,8 @@ export default function HomeHero() {
     setIsSearching,
     intentCategory,
     setIntentCategory,
+    jwtToken,
+    setJwtToken,
   } = useStore();
   const [parsedQuickResults, setParsedQuickResults] = useState("");
   const eventSourceRef = useRef<EventSource | null>(null);
@@ -120,11 +122,14 @@ export default function HomeHero() {
       });
 
       const data = await res.json();
-      const { ragProcessID, intentCategory, jwtToken } = data;
+      const {id, ragProcessID, intentCategory, jwtToken } = data;
 
       setIntentCategory(intentCategory);
+      setJwtToken(jwtToken);
+      
       localStorage.setItem("intentCategory", intentCategory);
       localStorage.setItem("jwtToken", jwtToken);
+      localStorage.setItem("queryId", id);
       console.log(
         `start registering SSE for quickRAGContent Push with ID: ${ragProcessID}`
       );

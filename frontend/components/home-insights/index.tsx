@@ -31,7 +31,7 @@ export default function HomeInsights() {
   } , []);
 
   return (
-    <div className="flex flex-col md:ml-20 lg:ml-32 xl:ml-96 xl:w-1/2 mx-4">
+    <div className="flex flex-col md:ml-20 lg:ml-32 xl:ml-96 xl:w-1/2 mx-4 mt-24">
       {communityContent?.length > 0 && (
         <h2 className="text-xl font-bold text-gradient-primary text-start mb-6">
           Community Content:

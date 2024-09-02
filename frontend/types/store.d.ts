@@ -20,6 +20,7 @@ export interface Store {
     | "full RAG"
     | "intent recognition";
   isSearching: boolean;
+  jwtToken: string;
 }
 
 export interface KeyActions {
@@ -36,4 +37,5 @@ export interface KeyActions {
     currentRAGProcessStatus: Store["currentRAGProcessStatus"]
   ) => void;
   setIsSearching: (isSearching: Store["isSearching"]) => void;
+  setJwtToken: (jwtToken: Store["jwtToken"]) => void;
 }

@@ -1,13 +1,72 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { Dialog, DialogPanel } from "@headlessui/react";
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
+import useStore from "../../store/store";
 import Logo from "./logo";
+import DeleteConfirmationDialog from "./deleteConfirmationDialog";
+
+interface QueryDeleteResponse {
+  queryId: string;
+  message: string;
+}
 
 export default function HomeHeader() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [jwtToken, setJwtToken] = useState("");
+  const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
+  const {
+    setCurrentQueryId,
+    setIntentCategory,
+    setQuickRAGResults,
+    setDeepRAGResults,
+    setFullRAGRawContent,
+    jwtToken,
+    setJwtToken,
+  } = useStore();
+
+  const handleDeleteLastSearch = async () => {
+    try {
+      const jwtToken = localStorage.getItem("jwtToken");
+      const queryId = localStorage.getItem("queryId");
+
+      if (!jwtToken || !queryId) {
+        console.error("No JWT token or queryId found");
+        return;
+      }
+
+      const response = await fetch("/api/querydelete", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ queryId, jwtToken }),
+      });
+
+      const data: QueryDeleteResponse = await response.json();
+
+      if (data.queryId === queryId) {
+        localStorage.removeItem("quickRAGContent");
+        localStorage.removeItem("deepRAGProfile");
+        localStorage.removeItem("intentCategory");
+        localStorage.removeItem("jwtToken");
+        localStorage.removeItem("queryId");
+
+        setJwtToken("");
+        setCurrentQueryId("");
+        setIntentCategory("");
+        setQuickRAGResults("");
+        setDeepRAGResults("");
+        setFullRAGRawContent("");
+      }
+
+      console.log("Last search deleted successfully");
+      // Refresh the page after successful deletion
+      window.location.reload();
+    } catch (error) {
+      console.error("Error in deleting last search:", error);
+    }
+  };
 
   useEffect(() => {
     const token = localStorage.getItem("jwtToken");
@@ -37,7 +96,10 @@ export default function HomeHeader() {
         </div>
         <div className="hidden lg:flex lg:flex-1 lg:justify-end">
           {jwtToken && (
-            <div className="px-2 py-2 drop-shadow-md cursor-pointer rounded-full bg-gradient-primary text-white hover:text-gradient-primary hover:bg-gradient-primary-light text-base leading-6 animate-pulse">
+            <div
+              className="text-sm px-2 py-2 drop-shadow-md cursor-pointer rounded-full bg-gradient-primary text-white hover:text-gradient-primary hover:bg-gradient-primary-light leading-6 animate-pulse"
+              onClick={() => setShowDeleteConfirmation(true)}
+            >
               Delete Last Search for privacy
               <span aria-hidden="true">&rarr;</span>
             </div>
@@ -66,7 +128,10 @@ export default function HomeHeader() {
             <div className="-my-6 divide-y divide-gray-500/10">
               <div className="py-6">
                 {jwtToken && (
-                  <div className="-mx-2 block rounded-full drop-shadow-md w-10/12 px-2 py-2 text-base font-semibold leading-7 bg-gradient-primary text-white hover:text-gradient-primary hover:bg-gradient-primary-light animate-pulse">
+                  <div
+                    className="-mx-2 block rounded-full drop-shadow-md w-9/12 px-2 py-2 text-sm text-center leading-7 bg-gradient-primary text-white hover:text-gradient-primary hover:bg-gradient-primary-light animate-pulse"
+                    onClick={() => setShowDeleteConfirmation(true)}
+                  >
                     Delete Last Search for privacy
                   </div>
                 )}
@@ -75,6 +140,11 @@ export default function HomeHeader() {
           </div>
         </DialogPanel>
       </Dialog>
+      <DeleteConfirmationDialog
+        isOpen={showDeleteConfirmation}
+        onClose={() => setShowDeleteConfirmation(false)}
+        onConfirm={handleDeleteLastSearch}
+      />
     </header>
   );
 }

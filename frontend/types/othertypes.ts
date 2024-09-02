@@ -62,3 +62,8 @@ export type RAGProcess = {
   createdAt: Date;
   updatedAt: Date;
 };
+
+export type QueryDeleteRequest = {
+  queryId: string;
+  jwtToken: string;
+};

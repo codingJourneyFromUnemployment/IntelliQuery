@@ -13,8 +13,9 @@ const deleteQueryById = async (c: Context) => {
   try {
     const deleteRequest : QueryDeleteRequest = await c.req.json();
 
-    const queryID = deleteRequest.queryId;
+    // parse queryID from jwt token
     const token = deleteRequest.jwtToken;
+    const queryID = await jwtService.verifyAndExtractQueryId(token, c);
 
     // delete data in D1
     await D1services.deleteQueryByID(queryID, c);

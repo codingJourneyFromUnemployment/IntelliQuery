@@ -33,6 +33,7 @@ export async function POST(request: Request) {
     const { ragProcessID, intentCategory, jwtToken } = data;
     
     return new Response(JSON.stringify({
+      id,
       ragProcessID,
       intentCategory,
       jwtToken

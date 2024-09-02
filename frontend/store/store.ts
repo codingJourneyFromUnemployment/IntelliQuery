@@ -11,6 +11,7 @@ const useStore = create<Store & KeyActions>((set, get) => ({
   communityContent: [],
   currentRAGProcessStatus: "pending",
   isSearching: false,
+  jwtToken:"",
 
 
   setCurrentUserId: (currentUserId) => set({ currentUserId }),
@@ -25,6 +26,7 @@ const useStore = create<Store & KeyActions>((set, get) => ({
   setCurrentRAGProcessStatus: (currentRAGProcessStatus) =>
     set({ currentRAGProcessStatus }),
   setIsSearching: (isSearching) => set({ isSearching }),
+  setJwtToken: (jwtToken) => set({ jwtToken }),
 }));
 
 export default useStore;
