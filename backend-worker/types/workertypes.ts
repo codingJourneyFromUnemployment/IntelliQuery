@@ -90,6 +90,7 @@ export interface Bindings {
   SERPER_API_KEY: string;
   JINA_API_KEY: string;
   currentRAGProcessId: string;
+  JWT_SECRET: string;
   CORS_ORIGIN: string;
 }
 
