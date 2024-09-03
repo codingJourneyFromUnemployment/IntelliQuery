@@ -31,39 +31,4 @@ interface TailEvent {
 	}>;
 }
 
-export interface Env {
-	// Define your environment bindings here
-}
 
-export default {
-	async tail(events: TailEvent[], env: Env, ctx: ExecutionContext) {
-		for (const event of events) {
-			console.log(`\n--- Event for ${event.scriptName} at ${new Date(event.eventTimestamp).toISOString()} ---`);
-			console.log(`Outcome: ${event.outcome}`);
-
-			// Log request details if available
-			if (event.event?.request) {
-				const req = event.event.request;
-				console.log(`Request: ${req.method} ${req.url}`);
-			}
-
-			// Log console messages
-			for (const log of event.logs) {
-				console.log(`[${log.level.toUpperCase()}] ${log.message.join(' ')}`);
-			}
-
-			// Log all exceptions (including uncaught errors)
-			for (const exception of event.exceptions) {
-				console.error(`[EXCEPTION] ${exception.name}: ${exception.message}`);
-				if (exception.stack) {
-					console.error(exception.stack);
-				}
-			}
-
-			// Log outcome if it's not 'ok'
-			if (event.outcome !== 'ok') {
-				console.warn(`[WARNING] Worker execution outcome: ${event.outcome}`);
-			}
-		}
-	}
-};

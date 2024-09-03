@@ -13,6 +13,7 @@ const createMarkup = (html: string) => {
 
 export default function HomeHero() {
   const {
+    setCurrentQueryId,
     quickRAGResults,
     setQuickRAGResults,
     deepRAGResults,
@@ -126,6 +127,7 @@ export default function HomeHero() {
 
       setIntentCategory(intentCategory);
       setJwtToken(jwtToken);
+      setCurrentQueryId(id);
       
       localStorage.setItem("intentCategory", intentCategory);
       localStorage.setItem("jwtToken", jwtToken);

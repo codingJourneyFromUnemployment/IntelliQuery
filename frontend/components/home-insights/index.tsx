@@ -21,7 +21,6 @@ export default function HomeInsights() {
         "communityContent",
         JSON.stringify(communityContent)
       );
-      console.log("stored communityContent:", JSON.stringify(communityContent));
     } catch (error) {
       console.error(error);
     }

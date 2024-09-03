@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Dialog, DialogPanel } from "@headlessui/react";
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
 import useStore from "../../store/store";
@@ -16,6 +16,7 @@ export default function HomeHeader() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
   const {
+    currentQueryId,
     setCurrentQueryId,
     setIntentCategory,
     setQuickRAGResults,
@@ -25,13 +26,19 @@ export default function HomeHeader() {
     setJwtToken,
   } = useStore();
 
+  const jwtTokenRef = useRef(jwtToken);
+  const currentQueryIdRef = useRef(currentQueryId);
+
   const handleDeleteLastSearch = async () => {
     try {
-      const jwtToken = localStorage.getItem("jwtToken");
-      const queryId = localStorage.getItem("queryId");
+      const jwttoken = localStorage.getItem("jwtToken");
+      const queryid = localStorage.getItem("queryId");
 
-      if (!jwtToken || !queryId) {
-        console.error("No JWT token or queryId found");
+      if ( jwttoken && queryid ) {
+        setCurrentQueryId(queryid);
+        setJwtToken(jwttoken);
+      } else {
+        console.error("No JWT token or queryId found in local storage");
         return;
       }
 
@@ -40,12 +47,12 @@ export default function HomeHeader() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ queryId, jwtToken }),
+        body: JSON.stringify({ queryId: currentQueryId, jwtToken }),
       });
 
       const data: QueryDeleteResponse = await response.json();
 
-      if (data.queryId === queryId) {
+      if (data.queryId === currentQueryId) {
         localStorage.removeItem("quickRAGContent");
         localStorage.removeItem("deepRAGProfile");
         localStorage.removeItem("intentCategory");
@@ -58,6 +65,9 @@ export default function HomeHeader() {
         setQuickRAGResults("");
         setDeepRAGResults("");
         setFullRAGRawContent("");
+
+        jwtTokenRef.current = "";
+        currentQueryIdRef.current = "";
       }
 
       console.log("Last search deleted successfully");
@@ -70,9 +80,19 @@ export default function HomeHeader() {
 
   useEffect(() => {
     const token = localStorage.getItem("jwtToken");
+    const queryid = localStorage.getItem("queryId");
+    console.log("Token and queryid from local storage:", token, queryid);
     if (token) {
       setJwtToken(token);
+      jwtTokenRef.current = token;
     }
+    if (queryid) {
+      setCurrentQueryId(queryid);
+      currentQueryIdRef.current = queryid;
+    }
+    console.log(
+      "Current user id and JWT token:", currentQueryIdRef.current, jwtTokenRef.current
+    );
   }, []);
 
   return (
@@ -95,13 +115,13 @@ export default function HomeHeader() {
           </button>
         </div>
         <div className="hidden lg:flex lg:flex-1 lg:justify-end">
-          {jwtToken && (
+          {jwtTokenRef.current && currentQueryIdRef.current && (
             <div
               className="text-sm px-2 py-2 drop-shadow-md cursor-pointer rounded-full bg-gradient-primary text-white hover:text-gradient-primary hover:bg-gradient-primary-light leading-6 animate-pulse"
               onClick={() => setShowDeleteConfirmation(true)}
             >
               Delete Last Search for privacy
-              <span aria-hidden="true">&rarr;</span>
+              <span aria-hidden="true"> &rarr;</span>
             </div>
           )}
         </div>
@@ -127,7 +147,7 @@ export default function HomeHeader() {
           <div className="mt-6 flow-root">
             <div className="-my-6 divide-y divide-gray-500/10">
               <div className="py-6">
-                {jwtToken && (
+                {jwtTokenRef.current && currentQueryIdRef.current && (
                   <div
                     className="-mx-2 block rounded-full drop-shadow-md w-9/12 px-2 py-2 text-sm text-center leading-7 bg-gradient-primary text-white hover:text-gradient-primary hover:bg-gradient-primary-light animate-pulse"
                     onClick={() => setShowDeleteConfirmation(true)}

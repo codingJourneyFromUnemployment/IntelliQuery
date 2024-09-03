@@ -63,7 +63,7 @@ export const deepRAGService = {
       c
     );
 
-    const currentModel = c.env.OPENROUTER_MODEL_CHN;
+    const currentModel = c.env.OPENROUTER_MODEL_ENG;
     const deepRAGResults = await openrouterService(deepRAGContext, c.env, currentModel);
     const deepRAGReply = deepRAGResults.reply;
     const deepRAGProfileString = JSON.stringify(deepRAGReply);
