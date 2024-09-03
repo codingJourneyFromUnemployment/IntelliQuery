@@ -1,9 +1,8 @@
 #:schema node_modules/wrangler/config-schema.json
-name = "backend-worker"
+name = "tailworker"
 main = "src/index.ts"
 compatibility_date = "2024-08-21"
 compatibility_flags = ["nodejs_compat"]
-type = "webpack"
 
 # Automatically place your workloads in an optimal location to minimize latency.
 # If you are running back-end logic in a Worker, running it closer to your back-end infrastructure
@@ -37,10 +36,10 @@ type = "webpack"
 
 # Bind a D1 database. D1 is Cloudflare’s native serverless SQL database.
 # Docs: https://developers.cloudflare.com/workers/wrangler/configuration/#d1-databases
-[[d1_databases]]
-binding = "DB"
-database_name = "intelliquery-db"
-database_id = "2a8dda7d-3c77-4ac2-8d8d-12150d4adedd"
+# [[d1_databases]]
+# binding = "MY_DB"
+# database_name = "my-database"
+# database_id = "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
 
 # Bind a dispatch namespace. Use Workers for Platforms to deploy serverless functions programmatically on behalf of your customers.
 # Docs: https://developers.cloudflare.com/workers/wrangler/configuration/#dispatch-namespace-bindings-workers-for-platforms
@@ -52,18 +51,14 @@ database_id = "2a8dda7d-3c77-4ac2-8d8d-12150d4adedd"
 # Durable Objects can live for as long as needed. Use these when you need a long-running "server", such as in realtime apps.
 # Docs: https://developers.cloudflare.com/workers/wrangler/configuration/#durable-objects
 # [[durable_objects.bindings]]
-# name = "DEEPRAGPROCESSDO"
-# class_name = "DeepRAGDurableObject"   
+# name = "MY_DURABLE_OBJECT"
+# class_name = "MyDurableObject"
 
 # Durable Object migrations.
 # Docs: https://developers.cloudflare.com/workers/wrangler/configuration/#migrations
-[[migrations]]
-tag = "v1"
-new_classes = ["DeepRAGDurableObject"]
-
-[[migrations]]
-tag = "v2"
-deleted_classes = ["DeepRAGDurableObject"]
+# [[migrations]]
+# tag = "v1"
+# new_classes = ["MyDurableObject"]
 
 # Bind a Hyperdrive configuration. Use to accelerate access to your existing databases from Cloudflare Workers.
 # Docs: https://developers.cloudflare.com/workers/wrangler/configuration/#hyperdrive
@@ -73,9 +68,9 @@ deleted_classes = ["DeepRAGDurableObject"]
 
 # Bind a KV Namespace. Use KV as persistent storage for small key-value pairs.
 # Docs: https://developers.cloudflare.com/workers/wrangler/configuration/#kv-namespaces
-[[kv_namespaces]]
-binding = "RAGProcess"
-id = "1a0b5b1189a549078b51a90026a4d9cb"
+# [[kv_namespaces]]
+# binding = "MY_KV_NAMESPACE"
+# id = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
 
 # Bind an mTLS certificate. Use to present a client certificate when communicating with another service.
 # Docs: https://developers.cloudflare.com/workers/wrangler/configuration/#mtls-certificates
@@ -111,15 +106,3 @@ id = "1a0b5b1189a549078b51a90026a4d9cb"
 # [[vectorize]]
 # binding = "MY_INDEX"
 # index_name = "my-index"
-
-[[unsafe.bindings]]
-name = "RATE_LIMITER"
-type = "ratelimit"
-
-namespace_id = "1001"
-
-simple = { limit = 10, period = 60 }
-
-
-
-tail_consumers = [{service = "tailworker"}]

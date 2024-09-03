@@ -1,11 +1,15 @@
-OPENROUTER_MODEL_CHN="openai/gpt-4o-2024-08-06"
-OPENROUTER_MODEL_ENG="cognitivecomputations/dolphin-mixtral-8x22b"
-OPENROUTER_API_KEY=""
-SERPER_API_KEY=""
-JINA_API_KEY=""
-JWT_SECRET="YndXRn98WGhMTd2owV"
-CORS_ORIGIN="http://localhost:3000"
-
+/**
+ * Welcome to Cloudflare Workers! This is your first worker.
+ *
+ * - Run `npm run dev` in your terminal to start a development server
+ * - Open a browser tab at http://localhost:8787/ to see your worker in action
+ * - Run `npm run deploy` to publish your worker
+ *
+ * Bind resources to your worker in `wrangler.toml`. After adding bindings, a type definition for the
+ * `Env` object can be regenerated with `npm run cf-typegen`.
+ *
+ * Learn more at https://developers.cloudflare.com/workers/
+ */
 
 interface TailEvent {
 	scriptName: string;
@@ -65,5 +69,5 @@ export default {
 				console.warn(`[WARNING] Worker execution outcome: ${event.outcome}`);
 			}
 		}
-	}
+	},
 };
