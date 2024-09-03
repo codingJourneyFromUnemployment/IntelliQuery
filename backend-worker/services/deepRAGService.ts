@@ -67,7 +67,7 @@ export const deepRAGService = {
     const deepRAGResults = await openrouterService(deepRAGContext, c.env, currentModel);
     const deepRAGReply = deepRAGResults.reply;
     const deepRAGProfileString = JSON.stringify(deepRAGReply);
-    console.log(`\ndeepRAGProfileString: ${deepRAGProfileString}`);
+    console.log(`\nfetchDeepRAGFromOpenRouter completed`);
 
     // update DeepRAGProfile in DB
     const currentDeepRAGProfile = await D1services.createDeepRAGProfile(

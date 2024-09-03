@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect} from "react";
 import { Dialog, DialogPanel } from "@headlessui/react";
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
 import useStore from "../../store/store";
@@ -26,8 +26,6 @@ export default function HomeHeader() {
     setJwtToken,
   } = useStore();
 
-  const jwtTokenRef = useRef(jwtToken);
-  const currentQueryIdRef = useRef(currentQueryId);
 
   const handleDeleteLastSearch = async () => {
     try {
@@ -37,6 +35,7 @@ export default function HomeHeader() {
       if ( jwttoken && queryid ) {
         setCurrentQueryId(queryid);
         setJwtToken(jwttoken);
+
       } else {
         console.error("No JWT token or queryId found in local storage");
         return;
@@ -66,8 +65,6 @@ export default function HomeHeader() {
         setDeepRAGResults("");
         setFullRAGRawContent("");
 
-        jwtTokenRef.current = "";
-        currentQueryIdRef.current = "";
       }
 
       console.log("Last search deleted successfully");
@@ -79,19 +76,18 @@ export default function HomeHeader() {
   };
 
   useEffect(() => {
+
     const token = localStorage.getItem("jwtToken");
     const queryid = localStorage.getItem("queryId");
     console.log("Token and queryid from local storage:", token, queryid);
     if (token) {
       setJwtToken(token);
-      jwtTokenRef.current = token;
     }
     if (queryid) {
       setCurrentQueryId(queryid);
-      currentQueryIdRef.current = queryid;
     }
     console.log(
-      "Current user id and JWT token:", currentQueryIdRef.current, jwtTokenRef.current
+      "Current user id and JWT token:", currentQueryId, jwtToken
     );
   }, []);
 
@@ -115,7 +111,7 @@ export default function HomeHeader() {
           </button>
         </div>
         <div className="hidden lg:flex lg:flex-1 lg:justify-end">
-          {jwtTokenRef.current && currentQueryIdRef.current && (
+          {jwtToken && currentQueryId && (
             <div
               className="text-sm px-2 py-2 drop-shadow-md cursor-pointer rounded-full bg-gradient-primary text-white hover:text-gradient-primary hover:bg-gradient-primary-light leading-6 animate-pulse"
               onClick={() => setShowDeleteConfirmation(true)}
@@ -147,7 +143,7 @@ export default function HomeHeader() {
           <div className="mt-6 flow-root">
             <div className="-my-6 divide-y divide-gray-500/10">
               <div className="py-6">
-                {jwtTokenRef.current && currentQueryIdRef.current && (
+                {jwtToken && currentQueryId && (
                   <div
                     className="-mx-2 block rounded-full drop-shadow-md w-9/12 px-2 py-2 text-sm text-center leading-7 bg-gradient-primary text-white hover:text-gradient-primary hover:bg-gradient-primary-light animate-pulse"
                     onClick={() => setShowDeleteConfirmation(true)}
