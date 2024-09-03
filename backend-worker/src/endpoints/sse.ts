@@ -6,7 +6,6 @@ import {
   ragProcessManager,
   RAGProcessStatus,
 } from "../../services/statusManager";
-import { D1services } from "../../services/D1services";
 
 const sseEndpoint = async (c: Context) => {
   const ragProcessIDRequire = c.req.param("ragProcessID");
@@ -14,18 +13,16 @@ const sseEndpoint = async (c: Context) => {
     return c.json({ error: "No RAG process ID provided" }, 400);
   }
 
-  console.log("SSE endpoint for RAG Process ID:", ragProcessIDRequire);
-
   return streamSSE(c, async (stream) => {
-    let timeout = 80000; // 80 seconds timeout
+    let timeout = 120000; // 120 seconds timeout
     const interval = 1000; // 1 second interval
 
     while (timeout > 0) {
       console.log("Checking for quickRAGContent");
-      console.log("Current RAG Process ID:", c.env.currentRAGProcessId);
+      console.log("Current RAG Process ID:", ragProcessIDRequire);
 
       const currentRAGProcess = await ragProcessManager.fetchRAGProcess(
-        c.env.currentRAGProcessId,
+        ragProcessIDRequire,
         c
       );
 
@@ -47,13 +44,16 @@ const sseEndpoint = async (c: Context) => {
         });
 
         await ragProcessManager.updateRAGProcess(
-          c.env.currentRAGProcessId,
+          ragProcessIDRequire,
           RAGProcessStatus.QUICKRAG_SENT,
           c
         );
       }
 
-      if(currentRAGProcess.status === RAGProcessStatus.QUICKRAG_SENT && currentRAGProcess.intentCategory === "1") {
+      if (
+        currentRAGProcess.status === RAGProcessStatus.QUICKRAG_SENT &&
+        currentRAGProcess.intentCategory === "1"
+      ) {
         console.log("Direct LLM Answer, close the stream");
         await stream.writeSSE({
           data: "COMPLETED",
@@ -61,13 +61,13 @@ const sseEndpoint = async (c: Context) => {
         });
 
         await ragProcessManager.updateRAGProcess(
-          c.env.currentRAGProcessId,
+          ragProcessIDRequire,
           RAGProcessStatus.COMPLETED,
           c
         );
-        
+
         return;
-      } 
+      }
 
       if (deepRAGProfile) {
         console.log("start writeSSE for deepRAGProfile");
@@ -83,7 +83,7 @@ const sseEndpoint = async (c: Context) => {
         });
 
         await ragProcessManager.updateRAGProcess(
-          c.env.currentRAGProcessId,
+          ragProcessIDRequire,
           RAGProcessStatus.COMPLETED,
           c
         );
@@ -119,7 +119,7 @@ const sseEndpoint = async (c: Context) => {
       });
 
       await ragProcessManager.updateRAGProcess(
-        c.env.currentRAGProcessId,
+        ragProcessIDRequire,
         RAGProcessStatus.FAILED,
         c
       );

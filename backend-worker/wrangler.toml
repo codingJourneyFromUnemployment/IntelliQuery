@@ -18,7 +18,13 @@ type = "webpack"
 # Note: Use secrets to store sensitive data.
 # - https://developers.cloudflare.com/workers/configuration/secrets/
 # [vars]
-# MY_VARIABLE = "production_value"
+# OPENROUTER_MODEL_CHN="openai/gpt-4o-2024-08-06"
+# OPENROUTER_MODEL_ENG="cognitivecomputations/dolphin-mixtral-8x22b"
+# OPENROUTER_API_KEY=""
+# SERPER_API_KEY=""
+# JINA_API_KEY=""
+# JWT_SECRET="YndXRn98WGhMTd2owV"
+# CORS_ORIGIN="https://intelliqueryfrontend.pages.dev"
 
 # Bind the Workers AI model catalog. Run machine learning models, powered by serverless GPUs, on Cloudflare’s global network
 # Docs: https://developers.cloudflare.com/workers/wrangler/configuration/#workers-ai
@@ -122,4 +128,6 @@ simple = { limit = 10, period = 60 }
 
 
 
-tail_consumers = [{service = "tailworker"}]
+tail_consumers = [
+  { service = "tailworker", environment = "undefined" }
+]

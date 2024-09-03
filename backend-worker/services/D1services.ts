@@ -171,6 +171,9 @@ export const D1services = {
   },
 
   async createDeepRAGProfile(queryID: string, content: string, c: Context) {
+
+    console.log("start createDeepRAGProfile in D1");
+
     const prisma = c.get("prisma");
 
     try {
@@ -188,6 +191,8 @@ export const D1services = {
           deepRAGProfileId: newDeepRAGProfile.id,
         },
       });
+
+      console.log("\nCreated DeepRAGProfile in D1");
 
       return newDeepRAGProfile;
     } catch (error) {

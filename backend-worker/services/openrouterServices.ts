@@ -23,6 +23,7 @@ export async function openrouterService(
   }
 
   console.log(`current_model: ${currentModel}`);
+  console.log(`OPENROUTER_API_KEY: ${env.OPENROUTER_API_KEY}`);
 
   const maxRetries = 5;
   const baseDelay = 1000; // 1 second

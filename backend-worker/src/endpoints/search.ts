@@ -10,7 +10,9 @@ import { jwt } from "hono/jwt";
 
 const searchMainEndpoint = async (c: Context) => {
   try {
+    console.log("Entering searchMainEndpoint");
     const query: Query = await c.req.json();
+    console.log("Received query:", JSON.stringify(query));
     const queryID = query.id;
 
     // enter the intent recognition status

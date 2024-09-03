@@ -31,6 +31,9 @@ class RAGProcessManager {
     await c.env.RAGProcess.put(RAGprocess.id, JSON.stringify(RAGprocess));
     c.env.currentRAGProcessId = RAGprocess.id;
 
+    console.log(`Created RAGProcess: ${JSON.stringify(RAGprocess)}`);
+    console.log(`currentRAGProcessId: ${c.env.currentRAGProcessId}`);
+
     return RAGprocess;
   }
 

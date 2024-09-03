@@ -87,8 +87,6 @@ export const quickRAGService = {
       const newSearchResult = await this.createLLMDirectAnswer(queryID, c);
       const quickRAGReply = await this.fetchQuickDirectLLMAnswer(query, c);
 
-      console.log(`quickRAGReply: ${quickRAGReply}`);
-
       console.log(`updated RAGProcess status to PENDING`);
 
       const newRAGResult = await D1services.createRAGresult(
@@ -129,8 +127,6 @@ export const quickRAGService = {
       const newSearchResult = await this.updateBatchRawDataAndLinks(queryID, c);
 
       const quickRAGReply = await this.fetchQuickRAG(query, newSearchResult, c);
-
-      console.log(`quickRAGReply: ${quickRAGReply}`);
 
       console.log(`updated RAGProcess status to PENDING`);
 

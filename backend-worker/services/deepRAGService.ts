@@ -67,6 +67,7 @@ export const deepRAGService = {
     const deepRAGResults = await openrouterService(deepRAGContext, c.env, currentModel);
     const deepRAGReply = deepRAGResults.reply;
     const deepRAGProfileString = JSON.stringify(deepRAGReply);
+    console.log(`\ndeepRAGProfileString: ${deepRAGProfileString}`);
 
     // update DeepRAGProfile in DB
     const currentDeepRAGProfile = await D1services.createDeepRAGProfile(
@@ -94,6 +95,10 @@ export const deepRAGService = {
         currentSearchResult,
         c
       );
+
+      console.log(
+        `\nfetchDeepRAGFromOpenRouter in deepRAGService.processDeepRAG completed`
+      );
       // update DeepRAGProfile in statusManager
       const profileResult = await D1services.fetchDeepRAGProfileByQueryId(queryID, c);
       const content = profileResult.content;
@@ -103,6 +108,8 @@ export const deepRAGService = {
         content,
         c
       );
+
+      console.log(`\nupdated DeepRAGProfile in statusManager`);
 
       // update RAG process status to COMPLETED
       await ragProcessManager.updateRAGProcess(
