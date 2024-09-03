@@ -10,6 +10,7 @@ import { Bindings } from "../types/workertypes";
 import D1middleware from "../middlewares/D1middleware";
 import sseEndpoint from "./endpoints/sse";
 import deleteQueryById from "./endpoints/deletequery";
+import deepRAGSubRequest from "./endpoints/subrequest";
 
 
 const app = new Hono<{ Bindings: Bindings }>();
@@ -19,9 +20,9 @@ app.use('*', D1middleware);
 
 app.use("*", async (c, next ) => {
   const corsMiddlewareHandler = cors({
-    origin: c.env.CORS_ORIGIN,
+    origin: [c.env.CORS_ORIGIN_1, c.env.CORS_ORIGIN_2],
     allowMethods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    allowHeaders: ["Content-Type", "Authorization"],
+    allowHeaders: ["Content-Type", "Authorization", "X-Query-Id"],
     exposeHeaders: ["Content-Length"],
     maxAge: 600,
     credentials: true,
@@ -49,6 +50,7 @@ app.post("/search",
 app.post("/deletequery",
   zValidator("json", deleteQueryByIdSchema),
   deleteQueryById);
+app.post("/subrequest", deepRAGSubRequest);
 
 export default app;
 

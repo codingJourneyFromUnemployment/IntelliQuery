@@ -7,6 +7,7 @@ import { deepRAGService } from "../../services/deepRAGService";
 import { D1services } from "../../services/D1services";
 import { jwtService } from "../../services/jwtService";
 import { jwt } from "hono/jwt";
+import { contextManager } from "../../services/contextManager";
 
 const searchMainEndpoint = async (c: Context) => {
   try {
@@ -35,13 +36,26 @@ const searchMainEndpoint = async (c: Context) => {
         query
       );
 
-      // enter the deepRAGService and wait until the process is done
+      // post subrequest endpoint to deepRAGService
 
-      c.executionCtx.waitUntil(
-        deepRAGService.processDeepRAG(queryID, query, c)
-      )
-      
-      
+      const subrequest = {
+        queryID: queryID,
+        ragProcessId: c.env.currentRAGProcessId,
+      };
+
+      const baseURL = c.env.CORS_ORIGIN_2;
+      const subrequestURL = `${baseURL}/subrequest`;
+
+      c.executionCtx.waitUntil(fetch(subrequestURL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(subrequest),
+      }).catch((error) => {
+        console.error(`Error in searchMainEndpoint.fetch: ${error}`);
+      }));
+
     } else {
       console.log("Error in intent recognition");
       return c.json(

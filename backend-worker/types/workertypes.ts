@@ -91,7 +91,8 @@ export interface Bindings {
   JINA_API_KEY: string;
   currentRAGProcessId: string;
   JWT_SECRET: string;
-  CORS_ORIGIN: string;
+  CORS_ORIGIN_1: string;
+  CORS_ORIGIN_2: string;
 }
 
 // other types
