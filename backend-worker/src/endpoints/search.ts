@@ -46,6 +46,8 @@ const searchMainEndpoint = async (c: Context) => {
       const baseURL = c.env.CORS_ORIGIN_2;
       const subrequestURL = `${baseURL}/subrequest`;
 
+      console.log("\nentering subrequestURL");
+
       c.executionCtx.waitUntil(fetch(subrequestURL, {
         method: "POST",
         headers: {
@@ -54,6 +56,8 @@ const searchMainEndpoint = async (c: Context) => {
         body: JSON.stringify(subrequest),
       }).catch((error) => {
         console.error(`Error in searchMainEndpoint.fetch: ${error}`);
+      }).finally(() => {
+        console.log("\nentered subrequestURL");
       }));
 
     } else {
@@ -70,6 +74,8 @@ const searchMainEndpoint = async (c: Context) => {
     // return RAGProceesID for SSE endpoint
 
     const ragProcessID = c.env.currentRAGProcessId;
+
+    console.log("\nsend response to client for SSE endpoint");
 
     return c.json({
       statuscode: 200,
