@@ -38,27 +38,29 @@ const searchMainEndpoint = async (c: Context) => {
 
       // post subrequest endpoint to deepRAGService
 
-      const subrequest = {
-        queryID: queryID,
-        ragProcessId: c.env.currentRAGProcessId,
-      };
+      // const subrequest = {
+      //   queryID: queryID,
+      //   ragProcessId: c.env.currentRAGProcessId,
+      // };
 
-      const baseURL = c.env.CORS_ORIGIN_2;
-      const subrequestURL = `${baseURL}/subrequest`;
+      // const baseURL = c.env.CORS_ORIGIN_2;
+      // const subrequestURL = `${baseURL}/subrequest`;
 
-      console.log("\nentering subrequestURL");
+      // console.log("\nentering subrequestURL");
 
-      c.executionCtx.waitUntil(fetch(subrequestURL, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(subrequest),
-      }).catch((error) => {
-        console.error(`Error in searchMainEndpoint.fetch: ${error}`);
-      }).finally(() => {
-        console.log("\nentered subrequestURL");
-      }));
+      // c.executionCtx.waitUntil(fetch(subrequestURL, {
+      //   method: "POST",
+      //   headers: {
+      //     "Content-Type": "application/json",
+      //   },
+      //   body: JSON.stringify(subrequest),
+      // }).catch((error) => {
+      //   console.error(`Error in searchMainEndpoint.fetch: ${error}`);
+      // }).finally(() => {
+      //   console.log("\nentered subrequestURL");
+      // }));
+
+      await deepRAGService.processDeepRAG(queryID, query, c);
 
     } else {
       console.log("Error in intent recognition");

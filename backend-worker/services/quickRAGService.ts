@@ -61,7 +61,7 @@ export const quickRAGService = {
       searchResults,
       c
     );
-    const currentModel = c.env.OPENROUTER_MODEL_ENG;
+    const currentModel = c.env.OPENROUTER_MODEL_CHN;
     const quickRAGReply = await openrouterService(quickRAGContext, c.env, currentModel);
     return quickRAGReply.reply;
   },
@@ -75,7 +75,7 @@ export const quickRAGService = {
       c
     );
 
-    const currentModel = c.env.OPENROUTER_MODEL_ENG;
+    const currentModel = c.env.OPENROUTER_MODEL_CHN;
     const quickRAGReply = await openrouterService(quickRAGDirectLLMAnswerContext, c.env, currentModel);
     return quickRAGReply.reply;
 
